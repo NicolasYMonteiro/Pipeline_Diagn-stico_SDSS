@@ -1,0 +1,1497 @@
+{
+  "formId": "1Y6GHq65eqrkEifbsLxZcgu3jh1ZUTqTphTRmrS60hJk",
+  "info": {
+    "title": "Diagnóstico dos Distritos Sanitários para descentralização da Sala de Situação em Saúde de Salvador",
+    "description": "Instruções: Este formulário tem como objetivo realizar um diagnóstico de pessoas, processos e infraestrutura tecnológica dos Distritos Sanitários de Saúde de Salvador, necessário para a descentralização da Sala de Situação em Saúde. Suas respostas são fundamentais para identificar necessidades reais e direcionar investimentos.\n\nÉ fundamental destacar que este NÃO é um formulário de avaliação de desempenho individual ou da atuação da equipe. Seu propósito é exclusivamente diagnóstico e construtivo. As respostas nos ajudarão a compreender as necessidades, dificuldades e potencialidades de cada Distrito Sanitário.",
+    "documentTitle": "Cópia de Diagnóstico para descentralização da SDSS - Pet Saúde Digital"
+  },
+  "settings": {
+    "quizSettings": {},
+    "emailCollectionType": "DO_NOT_COLLECT"
+  },
+  "revisionId": "00000001",
+  "responderUri": "https://docs.google.com/forms/d/e/1FAIpQLSckw8h6WhG3kHqpbQc8ZEsGSlx39ZlXORvc9jnYsFPBGn0kVw/viewform",
+  "items": [
+    {
+      "itemId": "3b776a14",
+      "textItem": {},
+      "title": "Bloco I - Identificação"
+    },
+    {
+      "itemId": "024559bc",
+      "title": "1 - Distrito Sanitário (DS) ao qual você está vinculado",
+      "questionItem": {
+        "question": {
+          "questionId": "23d6ba1b",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Barra/Rio Vermelho"
+              },
+              {
+                "value": "Boca do Rio"
+              },
+              {
+                "value": "Brotas"
+              },
+              {
+                "value": "Cabula/Beirú"
+              },
+              {
+                "value": "Cajazeiras"
+              },
+              {
+                "value": "Centro Histórico"
+              },
+              {
+                "value": "Itapagipe"
+              },
+              {
+                "value": "Itapuã"
+              },
+              {
+                "value": "Liberdade"
+              },
+              {
+                "value": "Pau da Lima"
+              },
+              {
+                "value": "São Caetano/Valéria"
+              },
+              {
+                "value": "Subúrbio Ferroviário"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "38c2e44a",
+      "title": "2 - Você é coordenador do DS?",
+      "questionItem": {
+        "question": {
+          "questionId": "062c0eee",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim",
+                "goToSectionId": "02a578b7"
+              },
+              {
+                "value": "Não",
+                "goToSectionId": "24522666"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "24522666",
+      "pageBreakItem": {},
+      "title": "Área de Atuação"
+    },
+    {
+      "itemId": "207bc1f2",
+      "title": "3  - Se não, qual a sua área de atuação no DS?",
+      "questionItem": {
+        "question": {
+          "questionId": "010549e8",
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Subcoordenadoria de Atenção e Vigilância à Saúde"
+              },
+              {
+                "value": "Subcoordenadoria administrativa"
+              },
+              {
+                "isOther": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "02a578b7",
+      "pageBreakItem": {},
+      "title": "Bloco II - Pessoas/Equipe"
+    },
+    {
+      "itemId": "12343534",
+      "title": "4 - Na sua área de atuação, você trabalha diretamente com a coleta, análise ou gestão da informação?",
+      "description": "Entende-se por gestão da informação o gerenciamento de indicadores de saúde para a tomada de decisão.",
+      "questionItem": {
+        "question": {
+          "questionId": "265c5c3d",
+          "required": true,
+          "choiceQuestion": {
+            "type": "CHECKBOX",
+            "options": [
+              {
+                "value": "Coleta"
+              },
+              {
+                "value": "Análise"
+              },
+              {
+                "value": "Gestão da informação"
+              },
+              {
+                "value": "Não"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "54757384",
+      "questionGroupItem": {
+        "questions": [
+          {
+            "questionId": "73d12f19",
+            "required": true,
+            "rowQuestion": {
+              "title": "."
+            }
+          }
+        ],
+        "grid": {
+          "columns": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3"
+              },
+              {
+                "value": "4"
+              },
+              {
+                "value": "5"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      },
+      "title": "5 - Em uma escala de 1 (nenhuma) a 5 (muita), como você avalia a competência técnica da equipe do distrito para analisar e interpretar indicadores de saúde?"
+    },
+    {
+      "itemId": "0e97b532",
+      "title": "6 - Você participa de qualificações sobre análise de dados, sistemas de informação ou planejamento em saúde?",
+      "questionItem": {
+        "question": {
+          "questionId": "0afc2afb",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim, regularmente (ao menos uma vez por ano)"
+              },
+              {
+                "value": "Sim, mas esporadicamente"
+              },
+              {
+                "value": "Não"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "5ab74340",
+      "title": "7 - Na sua opinião existe,  por parte dos profissionais, uma cultura de valorização e uso de dados para a tomada de decisão no dia a dia do Distrito Sanitário?",
+      "questionItem": {
+        "question": {
+          "questionId": "4314abb3",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim, a análise de dados é central em nossas reuniões e planejamentos."
+              },
+              {
+                "value": "Em partes, usamos dados, mas as decisões ainda são muito baseadas na experiência."
+              },
+              {
+                "value": "Não, os dados são vistos mais como uma obrigação de preenchimento do que como uma ferramenta de gestão."
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "0d281336",
+      "title": "8 - Quais ferramentas são mais utilizadas por você para analisar dados?",
+      "questionItem": {
+        "question": {
+          "questionId": "7a1c9305",
+          "required": true,
+          "choiceQuestion": {
+            "type": "CHECKBOX",
+            "options": [
+              {
+                "value": "Planilhas (Excel, Google Sheets, etc.)"
+              },
+              {
+                "value": "Sistemas de tabulação do SUS (Tabwin, TabNet, etc.)"
+              },
+              {
+                "value": "Painéis de BI (Qlik Sense, Power BI, Looker Studio, Oracle, Sistema de Monitoramento da APS, etc.)"
+              },
+              {
+                "value": "Apresentações (PowerPoint, Google Slides, etc.)"
+              },
+              {
+                "value": "Nenhuma ferramenta específica, a análise é incipiente."
+              },
+              {
+                "isOther": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "243aaf26",
+      "pageBreakItem": {},
+      "title": "Bloco III - Estrutura Tecnológica"
+    },
+    {
+      "itemId": "2c7288c6",
+      "textItem": {},
+      "title": "Eixo I - Estações de Trabalho e notebooks"
+    },
+    {
+      "itemId": "09d82f92",
+      "title": "9 - O distrito sanitário de saúde possui estações de trabalho (computador, teclado, mouse e monitor) em condições adequadas de uso? Quantas? ",
+      "questionItem": {
+        "question": {
+          "questionId": "116929aa",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "1 a 10"
+              },
+              {
+                "value": "11 a 15"
+              },
+              {
+                "value": "16 a 20"
+              },
+              {
+                "value": "21 ou mais"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "28b2b411",
+      "title": "10 - Quantos computadores de mesa estão instalados, mas apresentam problemas recorrentes (lentidão, defeitos de hardware, etc.)?",
+      "description": "Considerar como recorrente os últimos seis meses.",
+      "questionItem": {
+        "question": {
+          "questionId": "41e238dc",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Nenhum"
+              },
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3 a 5"
+              },
+              {
+                "value": "6 ou mais"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "10cd9af4",
+      "title": "11 - O Distrito Sanitário possui notebooks em condições de uso? Se sim, quantos?",
+      "questionItem": {
+        "question": {
+          "questionId": "2b20b572",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Nenhum"
+              },
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3 a 5"
+              },
+              {
+                "value": "6 ou mais"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "1d39f6c7",
+      "questionGroupItem": {
+        "questions": [
+          {
+            "questionId": "50284da2",
+            "required": true,
+            "rowQuestion": {
+              "title": "Câmeras (webcams)"
+            }
+          },
+          {
+            "questionId": "2f70d770",
+            "required": true,
+            "rowQuestion": {
+              "title": "Caixas de som"
+            }
+          },
+          {
+            "questionId": "4159f9eb",
+            "required": true,
+            "rowQuestion": {
+              "title": "Microfones"
+            }
+          }
+        ],
+        "grid": {
+          "columns": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Nenhum"
+              },
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3 a 5"
+              },
+              {
+                "value": "6 ou mais"
+              },
+              {
+                "value": "Não se aplica"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      },
+      "title": "11.1 - Se respondeu sim na pergunta anterior, quantos desses notebooks possuem câmera, microfone e alto-falantes integrados e funcionais? "
+    },
+    {
+      "itemId": "5745fa19",
+      "textItem": {},
+      "title": "Eixo II - Recursos para Reuniões e Apresentações"
+    },
+    {
+      "itemId": "1fc9b2b9",
+      "questionGroupItem": {
+        "questions": [
+          {
+            "questionId": "371ff546",
+            "required": true,
+            "rowQuestion": {
+              "title": "Câmeras (webcams)"
+            }
+          },
+          {
+            "questionId": "63c7a495",
+            "required": true,
+            "rowQuestion": {
+              "title": "Microfones (de mesa ou headsets):"
+            }
+          },
+          {
+            "questionId": "19ff379a",
+            "required": true,
+            "rowQuestion": {
+              "title": "Fones de ouvido (headsets ou simples):"
+            }
+          },
+          {
+            "questionId": "5f7980c4",
+            "required": true,
+            "rowQuestion": {
+              "title": "Caixas de som (para uso coletivo em sala):"
+            }
+          }
+        ],
+        "grid": {
+          "columns": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Nenhum"
+              },
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3 a 5"
+              },
+              {
+                "value": "6 ou mais"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      },
+      "title": "12 - Para realizar reuniões remotas (videoconferências), marque quantos dos seguintes itens estão disponíveis e em condição de uso no Distrito Sanitário:",
+      "description": "Desconsiderar os itens associados ao notebook."
+    },
+    {
+      "itemId": "28efa6e8",
+      "questionGroupItem": {
+        "questions": [
+          {
+            "questionId": "7f7ded90",
+            "required": true,
+            "rowQuestion": {
+              "title": "Televisor"
+            }
+          },
+          {
+            "questionId": "69314128",
+            "required": true,
+            "rowQuestion": {
+              "title": "Projetor"
+            }
+          }
+        ],
+        "grid": {
+          "columns": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Nenhum"
+              },
+              {
+                "value": "1"
+              },
+              {
+                "value": "2"
+              },
+              {
+                "value": "3 ou mais"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      },
+      "title": "13 - O Distrito Sanitário possui televisores ou projetores que podem ser conectados a computadores/notebooks para apresentações? Se sim, quantos? "
+    },
+    {
+      "itemId": "0fe6a5ad",
+      "title": "14 - Existem cabos (ex: HDMI) ou adaptadores disponíveis e funcionais para conectar os computadores a esses televisores/projetores?",
+      "questionItem": {
+        "question": {
+          "questionId": "137e1d1b",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim, para todos os equipamentos"
+              },
+              {
+                "value": "Sim, mas não para todos"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "0703ec5a",
+      "textItem": {},
+      "title": "Eixo III - Conectividade e Redes"
+    },
+    {
+      "itemId": "22ec4516",
+      "title": "15 - Nos últimos 6 meses, o Distrito Sanitário possuiu conexão estável com a internet, permitindo o uso de videoconferências e acesso a sistemas de informação em saúde online e painéis de BI?",
+      "questionItem": {
+        "question": {
+          "questionId": "51f5b24f",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "38757f04",
+      "title": "15.1 - Se sim, em uma escala de 0 (péssima) a 10 (excelente), como você avalia a qualidade geral (velocidade e estabilidade) da internet?",
+      "questionItem": {
+        "question": {
+          "questionId": "29964720",
+          "required": true,
+          "scaleQuestion": {
+            "high": 10
+          }
+        }
+      }
+    },
+    {
+      "itemId": "052b769d",
+      "title": "16 - A rede de internet no Distrito Sanitário é:",
+      "questionItem": {
+        "question": {
+          "questionId": "67ec41e0",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Predominantemente com fio (cabeada)"
+              },
+              {
+                "value": "Predominantemente sem fio (Wi-Fi)"
+              },
+              {
+                "value": "Híbrida (possui as duas opções bem distribuídas)"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "60cb24c3",
+      "title": "17 - O acesso à rede Wi-Fi, se existente, é:",
+      "questionItem": {
+        "question": {
+          "questionId": "58079b0f",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Exclusivo para funcionários"
+              },
+              {
+                "value": "Aberto para o público/pacientes"
+              },
+              {
+                "value": "Não há rede Wi-Fi"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "574637c3",
+      "textItem": {},
+      "title": "Eixo IV - Infraestrutura Física"
+    },
+    {
+      "itemId": "1a546794",
+      "title": "18 - A estrutura elétrica do Distrito Sanitário suporta a inserção de novos equipamentos tecnológicos (Ex: mais computadores, televisores, etc.)?",
+      "questionItem": {
+        "question": {
+          "questionId": "3f6a53ad",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "04a9e28f",
+      "title": "19 - O Distrito Sanitário possui uma sala adequada para a realização de reuniões em grupo e que possa abrigar a estrutura da Sala de Situação (projeção de painéis, computadores, etc.)?",
+      "questionItem": {
+        "question": {
+          "questionId": "536b7148",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim, possui uma sala adequada"
+              },
+              {
+                "value": "Sim, mas a sala é pequena ou insuficiente para a demanda"
+              },
+              {
+                "value": "Não, não possui uma sala com essa finalidade"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "30a6c25a",
+      "title": "19.1 - Se possui uma sala, ela é climatizada (com ar-condicionado em funcionamento)?",
+      "questionItem": {
+        "question": {
+          "questionId": "55e13e11",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não se aplica"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "4c671e07",
+      "pageBreakItem": {},
+      "title": "Processos"
+    },
+    {
+      "itemId": "304403bb",
+      "textItem": {},
+      "title": "Eixo I - Gestão Estratégica, Planejamento e Monitoramento"
+    },
+    {
+      "itemId": "73045811",
+      "title": "20 - Há indicadores definidos para monitorar o desempenho das ações de saúde acompanhadas pela equipe técnica distrital?",
+      "questionItem": {
+        "question": {
+          "questionId": "2ec03868",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "5335d253",
+      "title": "21 - As informações e análises de dados geradas no Distrito Sanitário subsidiam a elaboração das metas para a Programação Operativa Anual (POA)?",
+      "questionItem": {
+        "question": {
+          "questionId": "1bff95bb",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "1ad51b9a",
+      "title": "21.1 - Se sim na pergunta anterior, descreva brevemente quais são os principais indicadores acompanhados.",
+      "questionItem": {
+        "question": {
+          "questionId": "24515e2a",
+          "textQuestion": {
+            "paragraph": true
+          }
+        }
+      }
+    },
+    {
+      "itemId": "4a33997d",
+      "title": "22 - As metas distritais são definidas a partir da análise dos dados?",
+      "questionItem": {
+        "question": {
+          "questionId": "3bb3ae33",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "7fcace9f",
+      "title": "23 - Existem meios de comunicação entre o Distrito Sanitário e as áreas técnicas do Nível Central para dialogar sobre os indicadores por território?",
+      "questionItem": {
+        "question": {
+          "questionId": "1b60801e",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "02ee69f0",
+      "title": "23.1 - Se sim, descreva quais os meios de comunicação utilizados (e-mail, reuniões, ofícios, grupos de mensagens, etc.) e com quais áreas técnicas.",
+      "questionItem": {
+        "question": {
+          "questionId": "5e788062",
+          "textQuestion": {
+            "paragraph": true
+          }
+        }
+      }
+    },
+    {
+      "itemId": "4880df16",
+      "title": "24 - Há periodicidade definida para atualização e revisão das metas estratégicas que compõem a POA do Distrito Sanitário?",
+      "questionItem": {
+        "question": {
+          "questionId": "79e0111b",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "1f547dc4",
+      "title": "24.1 - Se sim, qual a periodicidade?",
+      "questionItem": {
+        "question": {
+          "questionId": "3f8fb3b1",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Mensal"
+              },
+              {
+                "value": "Quadrimestral"
+              },
+              {
+                "value": "Semestral"
+              },
+              {
+                "value": "Anual"
+              },
+              {
+                "value": "Não se aplica"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "4ccca26e",
+      "textItem": {},
+      "title": "Eixo II -  Sistemas de Informação e Integração de Dados"
+    },
+    {
+      "itemId": "784a0091",
+      "title": "25 - Quais bases de dados dos Sistemas de Informação em Saúde (SIS), elencados abaixo, você utiliza para tabulação e análise dos dados no Distrito Sanitário?",
+      "description": "SINASC -  Sistema de Informações sobre Nascidos Vivos;\nE-SUS AB -  Estratégia e-SUS Atenção Básica;\nSISAB - Sistema de Informação em Saúde para a Atenção Básica;\nSINAN - Sistema de Informação de Agravos de Notificação;\nGAL - Gerenciador de Ambiente Laboratorial; \nSIA-SUS - Sistemas de Informações Ambulatoriais do SUS;\nSIH-SUS - Sistema de Informações Hospitalares do SUS;\nSIM - Sistema de Informação sobre Mortalidade;\nSivep-Gripe - Sistema de Informação da Vigilância Epidemiológica da Gripe;\nSisvan - Sistema de Vigilância Alimentar e Nutricional;",
+      "questionItem": {
+        "question": {
+          "questionId": "316e4677",
+          "required": true,
+          "choiceQuestion": {
+            "type": "CHECKBOX",
+            "options": [
+              {
+                "value": "SINASC"
+              },
+              {
+                "value": "Vida+"
+              },
+              {
+                "value": "E-SUS AB/SISAB"
+              },
+              {
+                "value": "SINAN"
+              },
+              {
+                "value": "GAL"
+              },
+              {
+                "value": "SIA-SUS"
+              },
+              {
+                "value": "SIH-SUS"
+              },
+              {
+                "value": "SIM"
+              },
+              {
+                "value": "Sivep-Gripe"
+              },
+              {
+                "value": "E-SUS Notifica"
+              },
+              {
+                "value": "Sisvan"
+              },
+              {
+                "value": "Nenhum sistema"
+              },
+              {
+                "value": "Não se aplica"
+              },
+              {
+                "isOther": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "1b4aec58",
+      "questionGroupItem": {
+        "questions": [
+          {
+            "questionId": "330f112e",
+            "rowQuestion": {
+              "title": "SINASC"
+            }
+          },
+          {
+            "questionId": "220a756b",
+            "rowQuestion": {
+              "title": "Vida+"
+            }
+          },
+          {
+            "questionId": "52e4ec9c",
+            "rowQuestion": {
+              "title": "E-SUS AB/SISAB"
+            }
+          },
+          {
+            "questionId": "05e8bef0",
+            "rowQuestion": {
+              "title": "SINAN"
+            }
+          },
+          {
+            "questionId": "41556684",
+            "rowQuestion": {
+              "title": "GAL"
+            }
+          },
+          {
+            "questionId": "7883027e",
+            "rowQuestion": {
+              "title": "SIA-SUS"
+            }
+          },
+          {
+            "questionId": "00bbe572",
+            "rowQuestion": {
+              "title": "SIH-SUS"
+            }
+          },
+          {
+            "questionId": "4e83d26c",
+            "rowQuestion": {
+              "title": "SIM"
+            }
+          },
+          {
+            "questionId": "42da21d8",
+            "rowQuestion": {
+              "title": "Sivep-Gripe"
+            }
+          },
+          {
+            "questionId": "6ff35c9a",
+            "rowQuestion": {
+              "title": "E-SUS Notifica"
+            }
+          },
+          {
+            "questionId": "091ea3f9",
+            "rowQuestion": {
+              "title": "Sisvan"
+            }
+          }
+        ],
+        "grid": {
+          "columns": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Muito Ruim"
+              },
+              {
+                "value": "Ruim"
+              },
+              {
+                "value": "Bom"
+              },
+              {
+                "value": "Muito bom"
+              },
+              {
+                "value": "Excelente"
+              },
+              {
+                "value": "Não se aplica"
+              }
+            ]
+          }
+        }
+      },
+      "title": "26 - Apenas para os sistemas escolhidos na questão anterior, avalie a qualidade dos dados desses sistemas refletindo em suas dimensões de qualidade.",
+      "description": "Dimensões de qualidade de dados e significado:\nAcessibilidade: Facilidade e rapidez para obter, manusear e compreender os dados.\nClareza Metodológica: Manuais e instruções dos dados existentes são claros e sem ambiguidades.\nCobertura: O sistema registra dados de todos os eventos que deveria cobrir.\nCompletude: Os campos dos registros estão devidamente preenchidos (poucos valores em branco).\nConfiabilidade: Dados são confiáveis quando comparados ou medidos novamente.\nConsistência: Variáveis relacionadas possuem valores coerentes e não contraditórios entre si.\nNão-duplicidade: Cada evento (ex: um paciente, uma notificação) está registrado apenas uma vez.\nOportunidade: Os dados estão disponíveis a tempo para serem úteis (tempestividade).\nValidade: O dado mede, de fato, o que se propõe a medir (Causas mal definidas, indeterminadas ou pouco úteis)."
+    },
+    {
+      "itemId": "4f28d764",
+      "title": "27 - Em relação aos dados digitados no Distrito Sanitário, os fluxos de coleta e digitação estão formalizados com as unidades de saúde do território? (Ex: Fichas do SINAN que são oriundas de unidades hospitalares)",
+      "questionItem": {
+        "question": {
+          "questionId": "0b081a41",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "774ed510",
+      "title": "28 - Existe rotina de conferência e validação da consistência dos dados que são digitados no Distrito Sanitário?",
+      "questionItem": {
+        "question": {
+          "questionId": "33e381f5",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "59c00548",
+      "title": "29 - Na sua opinião, a equipe responsável pelo registro dos dados é devidamente treinada?",
+      "questionItem": {
+        "question": {
+          "questionId": "2ba6c40a",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "3c7845e4",
+      "textItem": {},
+      "title": "Eixo III -  Avaliação e Gestão da Informação"
+    },
+    {
+      "itemId": "2644a09a",
+      "title": "30 - Quais foram as ações (planejamento, intervenções, etc.) realizadas a partir dos dados tabulados no Distrito Sanitário?",
+      "description": "Dados: informações utilizadas para subsidiar as ações (ex.: dados de cobertura vacinal, vigilância epidemiológica, atendimentos, etc.).\nFonte: sistema de informação de onde os dados foram obtidos (ex.: e-SUS, SI-PNI, SINAN, SISAB, relatórios internos, planilhas locais).\n\nDescrever na resposta quais dados, sua fonte e período, de acordo com o sistema de informação utilizado para análise.",
+      "questionItem": {
+        "question": {
+          "questionId": "47acb4a6",
+          "textQuestion": {
+            "paragraph": true
+          }
+        }
+      }
+    },
+    {
+      "itemId": "0611214a",
+      "title": "31 - Os resultados dos indicadores são comparados com séries históricas ou padrões de referência para análise de tendências?",
+      "description": "Entende-se como séries históricas: conjunto de dados coletados e organizados em ordem cronológica, que permite observar a evolução de um indicador ao longo do tempo (ex: casos de dengue por mês ou cobertura vacinal por ano)\nEntende-se como padrões de referência: valores, metas ou parâmetros utilizados para comparar e interpretar os resultados observados (ex: metas municipais, médias estaduais ou nacionais, parâmetros do Ministério da Saúde)",
+      "questionItem": {
+        "question": {
+          "questionId": "418caa19",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "6012e6f6",
+      "title": "32 - Há momentos institucionais de devolutiva e discussões dos resultados com as equipes das unidades de saúde? ",
+      "questionItem": {
+        "question": {
+          "questionId": "3d8d6d64",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não se aplica"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "3d2e0f8a",
+      "title": "33 - Os boletins, informes ou comunicados com resultados dos indicadores de saúde analisados são discutidos com as unidades de saúde do território? ",
+      "questionItem": {
+        "question": {
+          "questionId": "5ebae9b0",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "2af830ec",
+      "title": "34 - Os painéis da Sala de Situação estão sendo utilizados para a tomada de decisão? ",
+      "questionItem": {
+        "question": {
+          "questionId": "3f859ae6",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "5b7956cf",
+      "title": "34.1 - Se sim, especificar quais painéis são mais utilizados. ",
+      "questionItem": {
+        "question": {
+          "questionId": "311d2034",
+          "textQuestion": {
+            "paragraph": true
+          }
+        }
+      }
+    },
+    {
+      "itemId": "5c2cec37",
+      "textItem": {},
+      "title": "Eixo IV - Cultura de Dados e Inovação"
+    },
+    {
+      "itemId": "43770b27",
+      "title": "35 - Na sua opinião, existe estímulo à inovação e ao uso de novas ferramentas digitais para análise de dados no  Distrito Sanitário?",
+      "questionItem": {
+        "question": {
+          "questionId": "30748edd",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "68c4fe93",
+      "title": "36 - Você compreende o papel estratégico da Sala de Situação como uma ferramenta de apoio à gestão?",
+      "questionItem": {
+        "question": {
+          "questionId": "4e68cc8d",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Parcialmente"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "381a3248",
+      "title": "37 - O Distrito Sanitário tem alguma unidade de saúde que utiliza a telessaúde para a realização de consultas ou atendimentos remotos? ",
+      "questionItem": {
+        "question": {
+          "questionId": "221e6f4d",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "2d87ba59",
+      "textItem": {},
+      "title": "Eixo V -  Ética, Segurança e Proteção de Dados"
+    },
+    {
+      "itemId": "314c0c44",
+      "title": "38 - Você sabe o que é e qual o objetivo da Lei Geral de Proteção de Dados Pessoais (LGPD)?",
+      "questionItem": {
+        "question": {
+          "questionId": "16d465d5",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Tenho uma noção, mas não conheço em detalhes"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "0a66d21b",
+      "title": "39 - Você já recebeu treinamentos ou orientações formais sobre a confidencialidade das informações de saúde e a conformidade com a LGPD?",
+      "questionItem": {
+        "question": {
+          "questionId": "403d393a",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Apenas orientações informais"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "31854268",
+      "title": "40 - O acesso aos sistemas de informação é controlado por níveis de permissão individualizados (cada profissional com seu próprio login e senha)?",
+      "questionItem": {
+        "question": {
+          "questionId": "477cb829",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não, os acessos são compartilhados"
+              },
+              {
+                "value": "Em parte (alguns sistemas sim, outros não)"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "itemId": "6c2fc5ed",
+      "title": "41 - Existem protocolos de backup e recuperação de dados para os sistemas que são alimentados localmente no Distrito Sanitário?",
+      "questionItem": {
+        "question": {
+          "questionId": "38c6297d",
+          "required": true,
+          "choiceQuestion": {
+            "type": "RADIO",
+            "options": [
+              {
+                "value": "Sim"
+              },
+              {
+                "value": "Não"
+              },
+              {
+                "value": "Não sei informar"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "publishSettings": {
+    "publishState": {}
+  }
+}

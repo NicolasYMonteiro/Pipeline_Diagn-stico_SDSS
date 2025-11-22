@@ -1,0 +1,305 @@
+{
+  "dimension_tables": {
+    "dim_distritos": {
+      "table_name": "dim_distritos",
+      "columns": ["id", "distrito_nome", "ordem"],
+      "data": [
+        {"id": 1, "distrito_nome": "Barra/Rio Vermelho", "ordem": 1},
+        {"id": 2, "distrito_nome": "Boca do Rio", "ordem": 2},
+        {"id": 3, "distrito_nome": "Brotas", "ordem": 3},
+        {"id": 4, "distrito_nome": "Cabula/Beirú", "ordem": 4},
+        {"id": 5, "distrito_nome": "Cajazeiras", "ordem": 5},
+        {"id": 6, "distrito_nome": "Centro Histórico", "ordem": 6},
+        {"id": 7, "distrito_nome": "Itapagipe", "ordem": 7},
+        {"id": 8, "distrito_nome": "Itapuã", "ordem": 8},
+        {"id": 9, "distrito_nome": "Liberdade", "ordem": 9},
+        {"id": 10, "distrito_nome": "Pau da Lima", "ordem": 10},
+        {"id": 11, "distrito_nome": "São Caetano/Valéria", "ordem": 11},
+        {"id": 12, "distrito_nome": "Subúrbio Ferroviário", "ordem": 12}
+      ]
+    },
+
+    "dim_coordenador": {
+      "table_name": "dim_coordenador",
+      "columns": ["id", "resposta", "ordem"],
+      "data": [
+        {"id": 1, "resposta": "Sim", "ordem": 1},
+        {"id": 2, "resposta": "Não", "ordem": 2}
+      ]
+    },
+
+    "dim_area_atuacao": {
+      "table_name": "dim_area_atuacao",
+      "columns": ["id", "area_atuacao", "ordem"],
+      "data": [
+        {"id": 1, "area_atuacao": "Subcoordenadoria de Atenção e Vigilância à Saúde", "ordem": 1},
+        {"id": 2, "area_atuacao": "Subcoordenadoria administrativa", "ordem": 2},
+        {"id": 3, "area_atuacao": "Outro", "ordem": 3}
+      ]
+    },
+
+    "dim_trabalho_informacao": {
+      "table_name": "dim_trabalho_informacao",
+      "columns": ["id", "tipo_trabalho", "ordem"],
+      "data": [
+        {"id": 1, "tipo_trabalho": "Coleta", "ordem": 1},
+        {"id": 2, "tipo_trabalho": "Análise", "ordem": 2},
+        {"id": 3, "tipo_trabalho": "Gestão da informação", "ordem": 3},
+        {"id": 4, "tipo_trabalho": "Não", "ordem": 4}
+      ]
+    },
+
+    "dim_escala_competencia": {
+      "table_name": "dim_escala_competencia",
+      "columns": ["id", "nivel", "valor", "ordem"],
+      "data": [
+        {"id": 1, "nivel": "1", "valor": 1, "ordem": 1},
+        {"id": 2, "nivel": "2", "valor": 2, "ordem": 2},
+        {"id": 3, "nivel": "3", "valor": 3, "ordem": 3},
+        {"id": 4, "nivel": "4", "valor": 4, "ordem": 4},
+        {"id": 5, "nivel": "5", "valor": 5, "ordem": 5},
+        {"id": 6, "nivel": "Não sei informar", "valor": null, "ordem": 6}
+      ]
+    },
+
+    "dim_qualificacoes": {
+      "table_name": "dim_qualificacoes",
+      "columns": ["id", "frequencia", "ordem"],
+      "data": [
+        {"id": 1, "frequencia": "Sim, regularmente (ao menos uma vez por ano)", "ordem": 1},
+        {"id": 2, "frequencia": "Sim, mas esporadicamente", "ordem": 2},
+        {"id": 3, "frequencia": "Não", "ordem": 3}
+      ]
+    },
+
+    "dim_cultura_dados": {
+      "table_name": "dim_cultura_dados",
+      "columns": ["id", "nivel_cultura", "ordem"],
+      "data": [
+        {"id": 1, "nivel_cultura": "Sim, a análise de dados é central em nossas reuniões e planejamentos.", "ordem": 1},
+        {"id": 2, "nivel_cultura": "Em partes, usamos dados, mas as decisões ainda são muito baseadas na experiência.", "ordem": 2},
+        {"id": 3, "nivel_cultura": "Não, os dados são vistos mais como uma obrigação de preenchimento do que como uma ferramenta de gestão.", "ordem": 3},
+        {"id": 4, "nivel_cultura": "Não sei informar", "ordem": 4}
+      ]
+    },
+
+    "dim_ferramentas_analise": {
+      "table_name": "dim_ferramentas_analise",
+      "columns": ["id", "ferramenta", "ordem"],
+      "data": [
+        {"id": 1, "ferramenta": "Planilhas (Excel, Google Sheets, etc.)", "ordem": 1},
+        {"id": 2, "ferramenta": "Sistemas de tabulação do SUS (Tabwin, TabNet, etc.)", "ordem": 2},
+        {"id": 3, "ferramenta": "Painéis de BI (Qlik Sense, Power BI, Looker Studio, Oracle, Sistema de Monitoramento da APS, etc.)", "ordem": 3},
+        {"id": 4, "ferramenta": "Apresentações (PowerPoint, Google Slides, etc.)", "ordem": 4},
+        {"id": 5, "ferramenta": "Nenhuma ferramenta específica, a análise é incipiente.", "ordem": 5},
+        {"id": 6, "ferramenta": "Outro", "ordem": 6}
+      ]
+    },
+
+    "dim_quantidade_estacoes": {
+      "table_name": "dim_quantidade_estacoes",
+      "columns": ["id", "faixa_quantidade", "ordem", "min_quantidade", "max_quantidade"],
+      "data": [
+        {"id": 1, "faixa_quantidade": "1 a 10", "ordem": 1, "min_quantidade": 1, "max_quantidade": 10},
+        {"id": 2, "faixa_quantidade": "11 a 15", "ordem": 2, "min_quantidade": 11, "max_quantidade": 15},
+        {"id": 3, "faixa_quantidade": "16 a 20", "ordem": 3, "min_quantidade": 16, "max_quantidade": 20},
+        {"id": 4, "faixa_quantidade": "21 ou mais", "ordem": 4, "min_quantidade": 21, "max_quantidade": null}
+      ]
+    },
+
+    "dim_quantidade_equipamentos": {
+      "table_name": "dim_quantidade_equipamentos",
+      "columns": ["id", "categoria", "ordem", "min_quantidade", "max_quantidade"],
+      "data": [
+        {"id": 1, "categoria": "Nenhum", "ordem": 1, "min_quantidade": 0, "max_quantidade": 0},
+        {"id": 2, "categoria": "1", "ordem": 2, "min_quantidade": 1, "max_quantidade": 1},
+        {"id": 3, "categoria": "2", "ordem": 3, "min_quantidade": 2, "max_quantidade": 2},
+        {"id": 4, "categoria": "3 a 5", "ordem": 4, "min_quantidade": 3, "max_quantidade": 5},
+        {"id": 5, "categoria": "6 ou mais", "ordem": 5, "min_quantidade": 6, "max_quantidade": null},
+        {"id": 6, "categoria": "Não se aplica", "ordem": 6, "min_quantidade": null, "max_quantidade": null},
+        {"id": 7, "categoria": "Não sei informar", "ordem": 7, "min_quantidade": null, "max_quantidade": null}
+      ]
+    },
+
+    "dim_quantidade_tv_projetor": {
+      "table_name": "dim_quantidade_tv_projetor",
+      "columns": ["id", "categoria", "ordem", "min_quantidade", "max_quantidade"],
+      "data": [
+        {"id": 1, "categoria": "Nenhum", "ordem": 1, "min_quantidade": 0, "max_quantidade": 0},
+        {"id": 2, "categoria": "1", "ordem": 2, "min_quantidade": 1, "max_quantidade": 1},
+        {"id": 3, "categoria": "2", "ordem": 3, "min_quantidade": 2, "max_quantidade": 2},
+        {"id": 4, "categoria": "3 ou mais", "ordem": 4, "min_quantidade": 3, "max_quantidade": null},
+        {"id": 5, "categoria": "Não sei informar", "ordem": 5, "min_quantidade": null, "max_quantidade": null}
+      ]
+    },
+
+    "dim_cabos_adaptadores": {
+      "table_name": "dim_cabos_adaptadores",
+      "columns": ["id", "situacao", "ordem"],
+      "data": [
+        {"id": 1, "situacao": "Sim, para todos os equipamentos", "ordem": 1},
+        {"id": 2, "situacao": "Sim, mas não para todos", "ordem": 2},
+        {"id": 3, "situacao": "Não", "ordem": 3},
+        {"id": 4, "situacao": "Não sei informar", "ordem": 4}
+      ]
+    },
+
+    "dim_conectividade_internet": {
+      "table_name": "dim_conectividade_internet",
+      "columns": ["id", "situacao", "ordem"],
+      "data": [
+        {"id": 1, "situacao": "Sim", "ordem": 1},
+        {"id": 2, "situacao": "Não", "ordem": 2}
+      ]
+    },
+
+    "dim_tipo_rede": {
+      "table_name": "dim_tipo_rede",
+      "columns": ["id", "tipo_rede", "ordem"],
+      "data": [
+        {"id": 1, "tipo_rede": "Predominantemente com fio (cabeada)", "ordem": 1},
+        {"id": 2, "tipo_rede": "Predominantemente sem fio (Wi-Fi)", "ordem": 2},
+        {"id": 3, "tipo_rede": "Híbrida (possui as duas opções bem distribuídas)", "ordem": 3},
+        {"id": 4, "tipo_rede": "Não sei informar", "ordem": 4}
+      ]
+    },
+
+    "dim_acesso_wifi": {
+      "table_name": "dim_acesso_wifi",
+      "columns": ["id", "tipo_acesso", "ordem"],
+      "data": [
+        {"id": 1, "tipo_acesso": "Exclusivo para funcionários", "ordem": 1},
+        {"id": 2, "tipo_acesso": "Aberto para o público/pacientes", "ordem": 2},
+        {"id": 3, "tipo_acesso": "Não há rede Wi-Fi", "ordem": 3},
+        {"id": 4, "tipo_acesso": "Não sei informar", "ordem": 4}
+      ]
+    },
+
+    "dim_infraestrutura_eletrica": {
+      "table_name": "dim_infraestrutura_eletrica",
+      "columns": ["id", "capacidade", "ordem"],
+      "data": [
+        {"id": 1, "capacidade": "Sim", "ordem": 1},
+        {"id": 2, "capacidade": "Não", "ordem": 2},
+        {"id": 3, "capacidade": "Não sei informar", "ordem": 3}
+      ]
+    },
+
+    "dim_sala_reuniao": {
+      "table_name": "dim_sala_reuniao",
+      "columns": ["id", "situacao_sala", "ordem"],
+      "data": [
+        {"id": 1, "situacao_sala": "Sim, possui uma sala adequada", "ordem": 1},
+        {"id": 2, "situacao_sala": "Sim, mas a sala é pequena ou insuficiente para a demanda", "ordem": 2},
+        {"id": 3, "situacao_sala": "Não, não possui uma sala com essa finalidade", "ordem": 3}
+      ]
+    },
+
+    "dim_climatizacao": {
+      "table_name": "dim_climatizacao",
+      "columns": ["id", "situacao", "ordem"],
+      "data": [
+        {"id": 1, "situacao": "Sim", "ordem": 1},
+        {"id": 2, "situacao": "Não", "ordem": 2},
+        {"id": 3, "situacao": "Não se aplica", "ordem": 3}
+      ]
+    },
+
+    "dim_resposta_sim_nao": {
+      "table_name": "dim_resposta_sim_nao",
+      "columns": ["id", "resposta", "ordem"],
+      "data": [
+        {"id": 1, "resposta": "Sim", "ordem": 1},
+        {"id": 2, "resposta": "Não", "ordem": 2},
+        {"id": 3, "resposta": "Não sei informar", "ordem": 3}
+      ]
+    },
+
+    "dim_resposta_sim_nao_parcial": {
+      "table_name": "dim_resposta_sim_nao_parcial",
+      "columns": ["id", "resposta", "ordem"],
+      "data": [
+        {"id": 1, "resposta": "Sim", "ordem": 1},
+        {"id": 2, "resposta": "Não", "ordem": 2},
+        {"id": 3, "resposta": "Parcialmente", "ordem": 3},
+        {"id": 4, "resposta": "Não sei informar", "ordem": 4}
+      ]
+    },
+
+    "dim_periodicidade": {
+      "table_name": "dim_periodicidade",
+      "columns": ["id", "periodicidade", "ordem"],
+      "data": [
+        {"id": 1, "periodicidade": "Mensal", "ordem": 1},
+        {"id": 2, "periodicidade": "Quadrimestral", "ordem": 2},
+        {"id": 3, "periodicidade": "Semestral", "ordem": 3},
+        {"id": 4, "periodicidade": "Anual", "ordem": 4},
+        {"id": 5, "periodicidade": "Não se aplica", "ordem": 5}
+      ]
+    },
+
+    "dim_sistemas_informacao": {
+      "table_name": "dim_sistemas_informacao",
+      "columns": ["id", "sistema", "sigla", "ordem"],
+      "data": [
+        {"id": 1, "sistema": "SINASC", "sigla": "SINASC", "ordem": 1},
+        {"id": 2, "sistema": "Vida+", "sigla": "Vida+", "ordem": 2},
+        {"id": 3, "sistema": "E-SUS AB/SISAB", "sigla": "E-SUS", "ordem": 3},
+        {"id": 4, "sistema": "SINAN", "sigla": "SINAN", "ordem": 4},
+        {"id": 5, "sistema": "GAL", "sigla": "GAL", "ordem": 5},
+        {"id": 6, "sistema": "SIA-SUS", "sigla": "SIA", "ordem": 6},
+        {"id": 7, "sistema": "SIH-SUS", "sigla": "SIH", "ordem": 7},
+        {"id": 8, "sistema": "SIM", "sigla": "SIM", "ordem": 8},
+        {"id": 9, "sistema": "Sivep-Gripe", "sigla": "Sivep", "ordem": 9},
+        {"id": 10, "sistema": "E-SUS Notifica", "sigla": "E-SUS Not", "ordem": 10},
+        {"id": 11, "sistema": "Sisvan", "sigla": "Sisvan", "ordem": 11},
+        {"id": 12, "sistema": "Nenhum sistema", "sigla": "Nenhum", "ordem": 12},
+        {"id": 13, "sistema": "Não se aplica", "sigla": "N/A", "ordem": 13},
+        {"id": 14, "sistema": "Outro", "sigla": "Outro", "ordem": 14}
+      ]
+    },
+
+    "dim_qualidade_dados": {
+      "table_name": "dim_qualidade_dados",
+      "columns": ["id", "nivel_qualidade", "ordem", "valor_numerico"],
+      "data": [
+        {"id": 1, "nivel_qualidade": "Muito Ruim", "ordem": 1, "valor_numerico": 1},
+        {"id": 2, "nivel_qualidade": "Ruim", "ordem": 2, "valor_numerico": 2},
+        {"id": 3, "nivel_qualidade": "Bom", "ordem": 3, "valor_numerico": 3},
+        {"id": 4, "nivel_qualidade": "Muito bom", "ordem": 4, "valor_numerico": 4},
+        {"id": 5, "nivel_qualidade": "Excelente", "ordem": 5, "valor_numerico": 5},
+        {"id": 6, "nivel_qualidade": "Não se aplica", "ordem": 6, "valor_numerico": null}
+      ]
+    },
+
+    "dim_treinamento_lgpd": {
+      "table_name": "dim_treinamento_lgpd",
+      "columns": ["id", "situacao", "ordem"],
+      "data": [
+        {"id": 1, "situacao": "Sim", "ordem": 1},
+        {"id": 2, "situacao": "Não", "ordem": 2},
+        {"id": 3, "situacao": "Apenas orientações informais", "ordem": 3}
+      ]
+    },
+
+    "dim_acesso_sistemas": {
+      "table_name": "dim_acesso_sistemas",
+      "columns": ["id", "tipo_acesso", "ordem"],
+      "data": [
+        {"id": 1, "tipo_acesso": "Sim", "ordem": 1},
+        {"id": 2, "tipo_acesso": "Não, os acessos são compartilhados", "ordem": 2},
+        {"id": 3, "tipo_acesso": "Em parte (alguns sistemas sim, outros não)", "ordem": 3}
+      ]
+    },
+
+    "dim_conhecimento_lgpd": {
+      "table_name": "dim_conhecimento_lgpd",
+      "columns": ["id", "nivel_conhecimento", "ordem"],
+      "data": [
+        {"id": 1, "nivel_conhecimento": "Sim", "ordem": 1},
+        {"id": 2, "nivel_conhecimento": "Não", "ordem": 2},
+        {"id": 3, "nivel_conhecimento": "Tenho uma noção, mas não conheço em detalhes", "ordem": 3}
+      ]
+    }
+  }
+}

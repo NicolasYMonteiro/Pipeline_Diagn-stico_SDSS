@@ -625,6 +625,174 @@ def transformar_escalas_zero_dez(df: pd.DataFrame) -> pd.DataFrame:
     
     return df
 
+def transformar_escalas_zero_cinco(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Aplica transformação ordenada a todas as colunas de escala 0-10
+    """
+    
+    # Definir a ordem natural para escala 0-10
+    ordem_escala = ['0', '1', '2', '3', '4', '5']
+    
+    # Colunas que provavelmente são escalas 0-10 (baseado no seu rename_columns)
+    colunas_escala = [
+        'competencia_tecnica_equipe',
+    ]
+    
+    for coluna in colunas_escala:
+        if coluna not in df.columns:
+            continue
+            df = transformar_escala_ordenada(df, coluna, ordem_escala)
+    
+    return df
+
+def tratar_sistemas_e_qualidade(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Trata as colunas Q25 (sistemas usados) e Q26 (qualidade dos dados).
+    Cria colunas binárias de uso e avaliação por sistema.
+    Detecta inconsistências entre uso e avaliação.
+    """
+
+    # Lista de sistemas possíveis (baseado nas colunas de qualidade)
+    sistemas = [
+        'SINASC', 'Vida+', 'E-SUS AB/SISAB', 'SINAN', 'GAL',
+        'SIA-SUS', 'SIH-SUS', 'SIM', 'Sivep-Gripe', 'E-SUS Notifica', 'Sisvan'
+    ]
+
+    # Normalizar a coluna de sistemas usados
+    df['sistemas_informacao_utilizados'] = df['sistemas_informacao_utilizados'].fillna('').str.strip()
+
+    # Criar colunas binárias de uso
+    for sistema in sistemas:
+        col_uso = f'usou_{sistema.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}'
+        df[col_uso] = df['sistemas_informacao_utilizados'].str.contains(sistema, case=False, na=False).astype(int)
+
+    # Criar colunas binárias de avaliação (se avaliou, o valor não é vazio ou "Não se aplica")
+    for sistema in sistemas:
+        col_qualidade = f'qualidade_{sistema.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}'
+        col_avaliou = f'avaliou_{sistema.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}'
+
+        if col_qualidade in df.columns:
+            df[col_avaliou] = df[col_qualidade].notna() & (~df[col_qualidade].isin(['', 'Não se aplica'])).astype(int)
+        else:
+            df[col_avaliou] = 0  # Se não existe coluna de qualidade, não avaliou
+
+    # Detectar inconsistências
+    df['sistemas_inconsistentes'] = 0
+    for sistema in sistemas:
+        col_uso = f'usou_{sistema.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}'
+        col_avaliou = f'avaliou_{sistema.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}'
+
+        # Inconsistência: avaliou mas não usou
+        inconsistencia = (df[col_avaliou] == 1) & (df[col_uso] == 0)
+        df.loc[inconsistencia, 'sistemas_inconsistentes'] += 1
+
+    # Criar contadores
+    df['total_sistemas_usados'] = df[[f'usou_{s.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}' for s in sistemas]].sum(axis=1)
+    df['total_sistemas_avaliados'] = df[[f'avaliou_{s.lower().replace("-", "_").replace("+", "plus").replace(" ", "_")}' for s in sistemas]].sum(axis=1)
+
+    return df
+
+def criar_resumo_sistemas(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cria uma tabela resumo com uso e qualidade média por sistema.
+    """
+
+    sistemas = [
+        'SINASC', 'Vida+', 'E-SUS AB/SISAB', 'SINAN', 'GAL', 'SIA-SUS', 'SIH-SUS', 'SIM', 'Sivep-Gripe', 'E-SUS Notifica', 'Sisvan'
+    ]
+
+    # Mapeamento correto de sistema -> nomes reais das colunas
+    col_map = {
+        'SINASC': ('usou_sinasc', 'qualidade_sinasc'),
+        'Vida+': ('usou_vidaplus', 'qualidade_vida_plus'),
+        'E-SUS AB/SISAB': ('usou_e_sus_ab/sisab', 'qualidade_esus_sisab'),
+        'SINAN': ('usou_sinan', 'qualidade_sinan'),
+        'GAL': ('usou_gal', 'qualidade_gal'),
+        'SIA-SUS': ('usou_sia_sus', 'qualidade_sia_sus'),
+        'SIH-SUS': ('usou_sih_sus', 'qualidade_sih_sus'),
+        'SIM': ('usou_sim', 'qualidade_sim'),
+        'Sivep-Gripe': ('usou_sivep_gripe', 'qualidade_sivep_gripe'),
+        'E-SUS Notifica': ('usou_e_sus_notifica', 'qualidade_esus_notifica'),
+        'Sisvan': ('usou_sisvan', 'qualidade_sisvan')
+    }
+
+    qualidade_map = {
+        'Muito Ruim': 1,
+        'Ruim': 2, 
+        'Bom': 3,
+        'Muito bom': 4,
+        'Excelente': 5
+    }
+
+    resumo = []
+    for sistema in sistemas:
+        col_uso, col_qualidade = col_map[sistema]
+        
+        uso = df[col_uso].sum()
+        qualidades = df[col_qualidade].dropna().map(qualidade_map)
+        
+        if len(qualidades) > 0:
+            qualidade_media = qualidades.mean()
+        else:
+            qualidade_media = None
+        
+        resumo.append({
+            'sistema': sistema,
+            'uso': uso,
+            'qualidade_media': qualidade_media
+        })
+    
+    resumo_df = pd.DataFrame(resumo)
+    resumo_df = resumo_df[resumo_df['uso'] > 0]  # só quem foi usado
+    return resumo_df
+
+def criar_resumo_metas(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cria uma tabela resumo com metas distritais.
+    """
+
+    distritos = [
+        "Brotas",
+        "Cajazeiras",
+        "Boca do Rio",
+        "Itapuã",
+        "São Caetano/Valéria",
+        "Barra/Rio Vermelho",
+        "Cabula/Beirú",
+        "Subúrbio Ferroviário",
+        "Pau da Lima",
+        "Liberdade",
+        "Itapagipe",
+        "Centro Histórico"
+    ]
+
+    metas = {
+        'Brotas': 50,
+        'Cajazeiras': 40,
+        'Boca do Rio': 32,
+        'Itapuã': 43,
+        'São Caetano/Valéria': 41,
+        'Barra/Rio Vermelho': 34,
+        'Cabula/Beirú': 39,
+        'Subúrbio Ferroviário': 58,
+        'Pau da Lima': 47,
+        'Liberdade': 30,
+        'Itapagipe': 42,
+        'Centro Histórico': 45
+    }
+
+    resumo = []
+    for distrito in distritos:
+        meta = metas.get(distrito, None)
+        resumo.append({
+            'distrito': distrito,
+            'meta_distrital': meta
+        })
+    
+    resumo_df = pd.DataFrame(resumo)
+    return resumo_df
+
+
 
 def transform(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Iniciando transformações...")
@@ -636,8 +804,8 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     df = transformar_categoricos_grandes(df)
     df = transformar_categoricos_pequenos(df)
     df = transformar_escalas_zero_dez(df)
-    
-
+    df = transformar_escalas_zero_cinco(df)
+    df = tratar_sistemas_e_qualidade(df)
 
     logger.info("Transformação concluída.")
     return df
@@ -645,7 +813,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 # -------------------------------------------------------------------
 # LOAD – CRIA ABA E ESCREVE DADOS NA MESMA PLANILHA
 # -------------------------------------------------------------------
-def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "DadosTratados"):
+def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "DadosEtl"):
     logger.info(f"Criando aba '{new_tab}' na planilha...")
 
     sh = client.open_by_key(sheet_id)
@@ -668,6 +836,7 @@ def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "Dados
             df_preparado[col] = df_preparado[col].astype(str)
         # Colunas numéricas e outros tipos: fillna funciona normalmente
     
+    
     df_preparado = df_preparado.fillna('')
 
     values = [df_preparado.columns.tolist()] + df_preparado.values.tolist()
@@ -687,6 +856,48 @@ def main():
     df = transform(df)
     load_to_sheet(client, SHEET_ID, df, NEW_TAB)
 
+    # Criar resumo
+    resumo_df = criar_resumo_sistemas(df)
+    resumo_metas_df = criar_resumo_metas(df)
+
+
+    # Enviar para nova aba
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            existing = sh.worksheet("ResumoSistemas")
+            sh.del_worksheet(existing)
+            logger.info("Aba 'ResumoSistemas' existente → removida.")
+        except gspread.exceptions.WorksheetNotFound:
+            pass
+
+        ws = sh.add_worksheet(title="ResumoSistemas", rows=str(len(resumo_df) + 5), cols=str(len(resumo_df.columns) + 5))
+
+        # Preparar dados
+        valores = [resumo_df.columns.tolist()] + resumo_df.fillna('').values.tolist()
+        ws.update(values=valores)
+        logger.info("Aba 'ResumoSistemas' criada e preenchida com sucesso.")
+    except Exception as e:
+        logger.error(f"Erro ao criar aba 'ResumoSistemas': {e}")
+    
+    try:
+        sh = client.open_by_key(SHEET_ID)
+        try:
+            existing = sh.worksheet("ResumoMetas")
+            sh.del_worksheet(existing)
+            logger.info("Aba 'ResumoMetas' existente → removida.")
+        except gspread.exceptions.WorksheetNotFound:
+            pass
+
+        ws = sh.add_worksheet(title="ResumoMetas", rows=str(len(resumo_metas_df) + 5), cols=str(len(resumo_metas_df.columns) + 5))
+
+        # Preparar dados
+        valores = [resumo_metas_df.columns.tolist()] + resumo_metas_df.fillna('').values.tolist()
+        ws.update(values=valores)
+        logger.info("Aba 'ResumoMetas' criada e preenchida com sucesso.")
+    except Exception as e:
+        logger.error(f"Erro ao criar aba 'ResumoMetas': {e}")
+    
     logger.info("ETL COMPLETO!")
 
 
