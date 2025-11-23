@@ -1,3 +1,4 @@
+import json
 import os
 import pandas as pd
 import gspread
@@ -5,6 +6,8 @@ from google.oauth2.service_account import Credentials
 import logging
 from datetime import datetime
 import numpy as np
+import time
+
 
 # -------------------------------------------------------------------
 # CONFIGURAÇÃO DO LOGGER
@@ -605,43 +608,153 @@ def transformar_categoricos_pequenos(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def transformar_escala_ordenada(df: pd.DataFrame, coluna: str, ordem_categorias: list) -> pd.DataFrame:
+    """
+    Função auxiliar para transformar qualquer coluna em categórica ordenada
+    """
+    if coluna not in df.columns:
+        return df
+        
+    # Converter para categórica ordenada
+    df[coluna] = pd.Categorical(
+        df[coluna], 
+        categories=ordem_categorias, 
+        ordered=True
+    )
+    
+    return df
+
 def transformar_escalas_zero_dez(df: pd.DataFrame) -> pd.DataFrame:
     """
     Aplica transformação ordenada a todas as colunas de escala 0-10
     """
+    mapeamento_numerico = {
+        '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+        '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+        'Não sei informar': None, 'Não se aplica': None,
+    }
     
     # Definir a ordem natural para escala 0-10
     ordem_escala = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     
-    # Colunas que provavelmente são escalas 0-10 (baseado no seu rename_columns)
-    colunas_escala = [
-        'qualidade_internet',
-    ]
+    # Colunas que são escalas 0-10
+    colunas_escala = ['qualidade_internet']
     
     for coluna in colunas_escala:
         if coluna not in df.columns:
             continue
-            df = transformar_escala_ordenada(df, coluna, ordem_escala)
+            
+        # 1. Criar versão numérica
+        df[f'{coluna}_num'] = df[coluna].map(mapeamento_numerico)
+        
+        # 2. Aplicar transformação ordenada usando a função auxiliar
+        df = transformar_escala_ordenada(df, coluna, ordem_escala)
+        
+        # 3. Criar categorias simplificadas
+        conditions = [
+            df[coluna].isin(['0', '1', '2', '3']),
+            df[coluna].isin(['4', '5', '6']),
+            df[coluna].isin(['7', '8']),
+            df[coluna].isin(['9', '10']),
+            df[coluna].isin(['Não sei informar', 'Não se aplica'])
+        ]
+        
+        choices = ['Baixa (0-3)', 'Média (4-6)', 'Alta (7-8)', 'Muito Alta (9-10)', 'Não informado']
+        df[f'{coluna}_cat_simples'] = np.select(conditions, choices, default='Não informado')
+    
+    return df
+
+def transformar_escala_ordenada(df: pd.DataFrame, coluna: str, ordem_categorias: list) -> pd.DataFrame:
+    """
+    Função auxiliar para transformar qualquer coluna em categórica ordenada
+    """
+    if coluna not in df.columns:
+        return df
+        
+    # Converter para categórica ordenada
+    df[coluna] = pd.Categorical(
+        df[coluna], 
+        categories=ordem_categorias, 
+        ordered=True
+    )
+    
+    return df
+
+def transformar_escalas_zero_dez(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Aplica transformação ordenada a todas as colunas de escala 0-10
+    """
+    mapeamento_numerico = {
+        '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+        '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+        'Não sei informar': None, 'Não se aplica': None,
+    }
+    
+    # Definir a ordem natural para escala 0-10
+    ordem_escala = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    
+    # Colunas que são escalas 0-10
+    colunas_escala = ['qualidade_internet']
+    
+    for coluna in colunas_escala:
+        if coluna not in df.columns:
+            continue
+            
+        # 1. Criar versão numérica
+        df[f'{coluna}_num'] = df[coluna].map(mapeamento_numerico)
+        
+        # 2. Aplicar transformação ordenada usando a função auxiliar
+        df = transformar_escala_ordenada(df, coluna, ordem_escala)
+        
+        # 3. Criar categorias simplificadas
+        conditions = [
+            df[coluna].isin(['0', '1', '2', '3']),
+            df[coluna].isin(['4', '5', '6']),
+            df[coluna].isin(['7', '8']),
+            df[coluna].isin(['9', '10']),
+            df[coluna].isin(['Não sei informar', 'Não se aplica'])
+        ]
+        
+        choices = ['Baixa (0-3)', 'Média (4-6)', 'Alta (7-8)', 'Muito Alta (9-10)', 'Não informado']
+        df[f'{coluna}_cat_simples'] = np.select(conditions, choices, default='Não informado')
     
     return df
 
 def transformar_escalas_zero_cinco(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Aplica transformação ordenada a todas as colunas de escala 0-10
+    Aplica transformação ordenada a todas as colunas de escala 1-5
     """
+    mapeamento_numerico = {
+        '1': 1, '2': 2, '3': 3, '4': 4, '5': 5,
+        'Não sei informar': None
+    }
     
-    # Definir a ordem natural para escala 0-10
-    ordem_escala = ['0', '1', '2', '3', '4', '5']
+    # Definir a ordem natural para escala 1-5
+    ordem_escala = ['1', '2', '3', '4', '5']
     
-    # Colunas que provavelmente são escalas 0-10 (baseado no seu rename_columns)
-    colunas_escala = [
-        'competencia_tecnica_equipe',
-    ]
+    # Colunas que são escalas 1-5
+    colunas_escala = ['competencia_tecnica_equipe']
     
     for coluna in colunas_escala:
         if coluna not in df.columns:
             continue
-            df = transformar_escala_ordenada(df, coluna, ordem_escala)
+            
+        # 1. Criar versão numérica
+        df[f'{coluna}_num'] = df[coluna].map(mapeamento_numerico)
+        
+        # 2. Aplicar transformação ordenada usando a função auxiliar
+        df = transformar_escala_ordenada(df, coluna, ordem_escala)
+        
+        # 3. Criar categorias simplificadas
+        conditions = [
+            df[coluna].isin(['1', '2']),
+            df[coluna] == '3',
+            df[coluna].isin(['4', '5']),
+            df[coluna] == 'Não sei informar'
+        ]
+        
+        choices = ['Baixa (1-2)', 'Média (3)', 'Alta (4-5)', 'Não informado']
+        df[f'{coluna}_cat_simples'] = np.select(conditions, choices, default='Não informado')
     
     return df
 
@@ -792,8 +905,26 @@ def criar_resumo_metas(df: pd.DataFrame) -> pd.DataFrame:
     resumo_df = pd.DataFrame(resumo)
     return resumo_df
 
+def criar_tabelas_dimensao():
+    # -------------------------------------------------------------------
+    # CRIAÇÃO DAS TABELAS DE DIMENSÃO
+    # -------------------------------------------------------------------
+    logger.info("Criando tabelas de dimensão...")
 
+    with open("tabelas_dimensionamento.json", "r", encoding="utf-8") as f:
+        dims = json.load(f)["dimension_tables"]
 
+    abas = {}
+    for nome, conteudo in dims.items():
+        df = pd.DataFrame(conteudo["data"])
+        aba_nome = f"{nome}"
+        abas[aba_nome] = df
+
+    return abas
+
+# -------------------------------------------------------------------
+# # TRANSFORM – APLICA TRANSFORMAÇÕES NOS DADOS
+# -------------------------------------------------------------------
 def transform(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Iniciando transformações...")
     
@@ -827,78 +958,67 @@ def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "Dados
 
     ws = sh.add_worksheet(title=new_tab, rows=str(len(df) + 5), cols=str(len(df.columns) + 5))
 
-    # SOLUÇÃO: Tratar cada tipo de coluna adequadamente
+    # Preparar dados
     df_preparado = df.copy()
     
     for col in df_preparado.columns:
         if df_preparado[col].dtype.name == 'category':
-            # Colunas categóricas: converter para string
             df_preparado[col] = df_preparado[col].astype(str)
-        # Colunas numéricas e outros tipos: fillna funciona normalmente
-    
     
     df_preparado = df_preparado.fillna('')
 
+    # 🔥 ENVIAR DADOS UMA ÚNICA VEZ
     values = [df_preparado.columns.tolist()] + df_preparado.values.tolist()
     ws.update(values)
 
-    logger.info(f"Aba '{new_tab}' criada e preenchida com sucesso.")
+    # 🔥 FORMATAR COMO TABELA COMPLETA
+    try:
+        # 1. Congelar primeira linha
+        ws.freeze(rows=1)
+        
+        logger.info(f"Aba '{new_tab}' formatada como tabela completa.")
+        
+    except Exception as e:
+        logger.warning(f"Não foi possível aplicar formatação completa: {e}")
+
+    logger.info(f"Aba '{new_tab}' criada com sucesso.")
 
 # -------------------------------------------------------------------
 # MAIN
 # -------------------------------------------------------------------
 def main():
     SHEET_ID = "1GEFCBgoE5ed9yrEjAYe-FbWwXsIfc5G9mU2Gi0Yu_Kw"
-    TAB = "BaseBruta"           # aba original
-    NEW_TAB = "DadosTratados" # aba que o ETL vai criar
+    TAB = "BaseBruta"
+    NEW_TAB = "DadosEtl"
 
     df, client = extract(SHEET_ID, TAB)
     df = transform(df)
+    
+    # 🔥 USAR load_to_sheet PARA TODAS AS ABAS
     load_to_sheet(client, SHEET_ID, df, NEW_TAB)
 
-    # Criar resumo
+    # Criar e carregar resumos usando load_to_sheet
     resumo_df = criar_resumo_sistemas(df)
+    load_to_sheet(client, SHEET_ID, resumo_df, "ResumoSistemas")
+
     resumo_metas_df = criar_resumo_metas(df)
+    load_to_sheet(client, SHEET_ID, resumo_metas_df, "ResumoMetas")
 
-
-    # Enviar para nova aba
+    # 🔥 CARREGAR TABELAS DE DIMENSÃO COM load_to_sheet E DELAYS
     try:
-        sh = client.open_by_key(SHEET_ID)
-        try:
-            existing = sh.worksheet("ResumoSistemas")
-            sh.del_worksheet(existing)
-            logger.info("Aba 'ResumoSistemas' existente → removida.")
-        except gspread.exceptions.WorksheetNotFound:
-            pass
-
-        ws = sh.add_worksheet(title="ResumoSistemas", rows=str(len(resumo_df) + 5), cols=str(len(resumo_df.columns) + 5))
-
-        # Preparar dados
-        valores = [resumo_df.columns.tolist()] + resumo_df.fillna('').values.tolist()
-        ws.update(values=valores)
-        logger.info("Aba 'ResumoSistemas' criada e preenchida com sucesso.")
+        dim_abas = criar_tabelas_dimensao()
+        for i, (aba_nome, dim_df) in enumerate(dim_abas.items()):
+            load_to_sheet(client, SHEET_ID, dim_df, aba_nome)
+            
+            # Delay entre cada tabela de dimensão (exceto a última)
+            if i < len(dim_abas) - 1:
+                time.sleep(5)
+                logger.info(f"Delay aplicado após criar {aba_nome}")
+                
     except Exception as e:
-        logger.error(f"Erro ao criar aba 'ResumoSistemas': {e}")
+        logger.error(f"Erro ao criar abas de dimensão: {e}")
     
-    try:
-        sh = client.open_by_key(SHEET_ID)
-        try:
-            existing = sh.worksheet("ResumoMetas")
-            sh.del_worksheet(existing)
-            logger.info("Aba 'ResumoMetas' existente → removida.")
-        except gspread.exceptions.WorksheetNotFound:
-            pass
-
-        ws = sh.add_worksheet(title="ResumoMetas", rows=str(len(resumo_metas_df) + 5), cols=str(len(resumo_metas_df.columns) + 5))
-
-        # Preparar dados
-        valores = [resumo_metas_df.columns.tolist()] + resumo_metas_df.fillna('').values.tolist()
-        ws.update(values=valores)
-        logger.info("Aba 'ResumoMetas' criada e preenchida com sucesso.")
-    except Exception as e:
-        logger.error(f"Erro ao criar aba 'ResumoMetas': {e}")
-    
-    logger.info("ETL COMPLETO!")
+    logger.info("ETL COMPLETO! Todas as abas formatadas como tabelas.")
 
 
 if __name__ == "__main__":
