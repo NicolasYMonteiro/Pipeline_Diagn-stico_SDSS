@@ -9,9 +9,8 @@ import numpy as np
 import time
 
 
-# -------------------------------------------------------------------
+
 # CONFIGURAÇÃO DO LOGGER
-# -------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] - %(message)s",
@@ -20,9 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger("ETL")
 
 
-# -------------------------------------------------------------------
 # CARREGA CREDENCIAIS DO GOOGLE SHEETS DAS VARIÁVEIS DE AMBIENTE
-# -------------------------------------------------------------------
 def load_google_credentials():
     json_path = os.environ.get("GOOGLE_CREDENTIALS_JSON")
     if not json_path:
@@ -37,9 +34,7 @@ def load_google_credentials():
 
 
 
-# -------------------------------------------------------------------
 # EXTRACT – LE O GOOGLE SHEETS
-# -------------------------------------------------------------------
 def extract(sheet_id: str, tab_name: str):
     logger.info(f"Lendo planilha: {sheet_id} | Aba: {tab_name}")
 
@@ -56,9 +51,7 @@ def extract(sheet_id: str, tab_name: str):
     return df, client
 
 
-# -------------------------------------------------------------------
 # TRANSFORM – TRATAMENTO PADRÃO (MODIFIQUE COMO QUISER)
-# -------------------------------------------------------------------
 def normalizar_area_atuacao(df: pd.DataFrame) -> pd.DataFrame:
     """
     Normaliza a coluna 'area_atuacao' agrupando variações em categorias consistentes
@@ -345,7 +338,7 @@ def transformar_atuacao_info(df: pd.DataFrame) -> pd.DataFrame:
     """
     
     
-    # Criar colunas binárias de forma mais robusta
+    # Criar colunas binárias para cada opção
     df['atuacao_coleta'] = df['atuacao_info'].str.lower().str.strip().str.contains('coleta', na=False).astype(int)
     df['atuacao_analise'] = df['atuacao_info'].str.lower().str.strip().str.contains('análise', na=False).astype(int)
     df['atuacao_gestao'] = df['atuacao_info'].str.lower().str.strip().str.contains('gestão', na=False).astype(int)
@@ -560,7 +553,6 @@ def transformar_categoricos_pequenos(df: pd.DataFrame) -> pd.DataFrame:
         '': None
     }
     
-    # Aplicar mapeamento às colunas específicas
     colunas_perifericos = [
         'webcams_disponiveis',
         'microfones_disponiveis', 
@@ -577,24 +569,29 @@ def transformar_categoricos_pequenos(df: pd.DataFrame) -> pd.DataFrame:
         'projetores'
     
     ]
-
     
     for coluna in colunas_perifericos:
         if coluna not in df.columns:
+            print(f"⚠️ Coluna {coluna} não encontrada")
             continue
             
+        print(f"\n🔍 Analisando {coluna}:")
+        print(f"Valores únicos antes: {df[coluna].unique()}")
+        print(f"Contagem de valores:\n{df[coluna].value_counts()}")
+        
         # 1. Criar versão numérica
         df[f'{coluna}_num'] = df[coluna].map(mapeamento_numerico)
         
-        # 2. Substituir a coluna original pela versão ordenada
-        ordem_categorias = ['Nenhum', '1', '2', '3 a 5', '6 ou mais', 'Não sei informar', 'Não se aplica']
-        df[coluna] = pd.Categorical(
-            df[coluna], 
-            categories=ordem_categorias, 
-            ordered=True
-        )
+        print(f"Valores numéricos criados:")
+        print(f"Mínimo: {df[f'{coluna}_num'].min()}")
+        print(f"Máximo: {df[f'{coluna}_num'].max()}")
+        print(f"Média: {df[f'{coluna}_num'].mean()}")
+        print(f"Contagem de NaNs: {df[f'{coluna}_num'].isna().sum()}")
         
-        # 3. Criar categorias simplificadas
+        # 2. Restante do seu código...
+        ordem_categorias = ['Nenhum', '1', '2', '3 a 5', '6 ou mais', 'Não sei informar', 'Não se aplica']
+        df[coluna] = pd.Categorical(df[coluna], categories=ordem_categorias, ordered=True)
+        
         conditions = [
             df[coluna].isin(['Nenhum', '1']),
             df[coluna] == '2',
@@ -607,6 +604,7 @@ def transformar_categoricos_pequenos(df: pd.DataFrame) -> pd.DataFrame:
         df[f'{coluna}_cat_simples'] = np.select(conditions, choices, default='Não informado')
 
     return df
+
 
 def transformar_escala_ordenada(df: pd.DataFrame, coluna: str, ordem_categorias: list) -> pd.DataFrame:
     """
@@ -922,6 +920,151 @@ def criar_tabelas_dimensao():
 
     return abas
 
+
+# FUNÇÕES para INDICADORES – PONTUAÇÃO POR DIMENSÃO
+
+def _pontuar_pessoas(df: pd.DataFrame) -> pd.Series:
+    """
+    0-100 baseado em:
+    - competencia_tecnica_equipe (1-5)
+    - participa_qualificacoes
+    - cultura_uso_dados
+    - qtd_ferramentas (0-4+)
+    """
+    logger = logging.getLogger("ETL.ip_sala_situacao.pessoas")
+
+    # ---- valores brutos ----
+    comp_raw = pd.to_numeric(df['competencia_tecnica_equipe_num'], errors='coerce').fillna(1)
+    comp = comp_raw / 5                                    # 0-1
+    qual = df['participa_qualificacoes'].map({
+        'Sim, regularmente (ao menos uma vez por ano)': 1,
+        'Sim, mas esporadicamente': 0.5,
+        'Não': 0
+    }).fillna(0)
+    cult = df['cultura_uso_dados'].map({
+        'Sim, a análise de dados é central em nossas reuniões e planejamentos.': 1,
+        'Em partes, usamos dados, mas as decisões ainda são muito baseadas na experiência.': 0.5,
+        'Não, os dados são vistos mais como uma obrigação de preenchimento do que como uma ferramenta de gestão.': 0
+    }).fillna(0)
+    ferr = np.minimum(df['qtd_ferramentas'].fillna(0), 4) / 4   # 0-1
+
+    # ---- log de exemplo (primeira linha) ----
+    if len(df) > 0:
+        logger.info(f"Exemplo linha 0 -> comp: {comp.iloc[0]:.2f}, qual: {qual.iloc[0]:.2f}, "
+                    f"cult: {cult.iloc[0]:.2f}, ferr: {ferr.iloc[0]:.2f}")
+
+    # ---- score final 0-100 (sem duplicar *100) ----
+    score = (
+        comp * 40 +
+        qual * 25 +
+        cult * 25 +
+        ferr * 10
+    ) * 1
+    return score.clip(0, 100)
+
+def _pontuar_infraestrutura(df: pd.DataFrame) -> pd.Series:
+    logger = logging.getLogger("ETL.ip_sala_situacao.infra")
+
+    est = df['estacoes_trabalho_boas_num'].fillna(0) / 25
+    note = df['notebooks_boas_num'].fillna(0) / 6
+    net_ok = (df['internet_estavel'] == 'Sim').astype(int)
+    net_not = pd.to_numeric(df['qualidade_internet_num'], errors='coerce').fillna(0) / 10
+    sala = (df['sala_situacao'] == 'Sim, possui uma sala adequada').astype(int)
+    cabo = (df['cabos_adaptadores'] == 'Sim, para todos os equipamentos').astype(int)
+
+    if len(df) > 0:
+        logger.info(f"Exemplo linha 0 -> est: {est.iloc[0]:.2f}, note: {note.iloc[0]:.2f}, "
+                    f"net_ok: {net_ok.iloc[0]:.2f}, net_not: {net_not.iloc[0]:.2f}, "
+                    f"sala: {sala.iloc[0]:.2f}, cabo: {cabo.iloc[0]:.2f}")
+
+    score = (
+        est * 30 +
+        note * 15 +
+        net_ok * 20 + net_not * 10 +
+        sala * 20 +
+        cabo * 5
+    )  # <-- removido *100
+    return score.clip(0, 100)
+
+def _pontuar_processos(df: pd.DataFrame) -> pd.Series:
+    logger = logging.getLogger("ETL.ip_sala_situacao.processos")
+
+    # ---- etapas normalizadas 0-1 ----
+    ind_def     = (df['indicadores_definidos']        == 'Sim').astype(int)
+    dados_meta  = df['dados_subsidiam_metas'].map({'Sim': 1, 'Parcialmente': 0.5, 'Não': 0, 'Não sei informar': 0})
+    meta_dados  = df['metas_base_dados'].map({'Sim': 1, 'Parcialmente': 0.5, 'Não': 0, 'Não sei informar': 0})
+    fluxos      = (df['fluxos_formalizados']         == 'Sim').astype(int)
+    rotina      = (df['rotina_validacao']            == 'Sim').astype(int)
+    paineis     = df['paineis_tomada_decisao'].map({'Sim': 1, 'Parcialmente': 0.5, 'Não': 0, 'Não sei informar': 0})
+
+    # ---- log amostral (5 primeiras) ----
+    for i in range(min(5, len(df))):
+        logger.info(f"idx {i} -> ind_def:{ind_def.iloc[i]:.2f} dados_meta:{dados_meta.iloc[i]:.2f} "
+                    f"meta_dados:{meta_dados.iloc[i]:.2f} fluxos:{fluxos.iloc[i]:.2f} "
+                    f"rotina:{rotina.iloc[i]:.2f} paineis:{paineis.iloc[i]:.2f}")
+
+    score = (
+        ind_def   * 20 +
+        dados_meta * 15 +
+        meta_dados * 15 +
+        fluxos    * 15 +
+        rotina    * 20 +
+        paineis   * 15
+    )  # já 0-100
+    logger.info(f"ESTATÍSTICA processos -> min:{score.min():.1f} | média:{score.mean():.1f} | max:{score.max():.1f}")
+    return score.clip(0, 100)
+
+def _pontuar_seguranca(df: pd.DataFrame) -> pd.Series:
+    logger = logging.getLogger("ETL.ip_sala_situacao.seguranca")
+
+    # ---- etapas normalizadas 0-1 ----
+    lgpd        = df['conhecimento_lgpd'].map({'Sim': 1, 'Tenho uma noção, mas não conheço em detalhes': 0.5, 'Não': 0})
+    treino      = df['treinamento_lgpd'].map({'Sim': 1, 'Apenas orientações informais': 0.5, 'Não': 0})
+    acesso      = df['acesso_individualizado'].map({'Sim': 1, 'Em parte (alguns sistemas sim, outros não)': 0.5, 'Não, os acessos são compartilhados': 0})
+    backup      = (df['protocolos_backup'] == 'Sim').astype(int)
+
+    # ---- log amostral (5 primeiras) ----
+    for i in range(min(5, len(df))):
+        logger.info(f"idx {i} -> lgpd:{lgpd.iloc[i]:.2f} treino:{treino.iloc[i]:.2f} "
+                    f"acesso:{acesso.iloc[i]:.2f} backup:{backup.iloc[i]:.2f}")
+
+    score = (
+        lgpd   * 30 +
+        treino * 25 +
+        acesso * 25 +
+        backup * 20
+    )  # já 0-100
+    logger.info(f"ESTATÍSTICA seguranca -> min:{score.min():.1f} | média:{score.mean():.1f} | max:{score.max():.1f}")
+    return score.clip(0, 100)
+
+# FUNÇÃO PRINCIPAL – ADICIONA O ÍNDICE
+def adicionar_ip_sala_situacao(df: pd.DataFrame) -> pd.DataFrame:
+    logger.info("Calculando IP-SalaSit...")
+    df = df.copy()
+
+    # garantir que colunas numéricas já existam
+    num_cols = ['competencia_tecnica_equipe_num', 'estacoes_trabalho_boas_num',
+                'notebooks_boas_num', 'qualidade_internet_num', 'qtd_ferramentas']
+    for c in num_cols:
+        if c not in df.columns:
+            logger.warning(f"Coluna {c} não encontrada – preenchendo com 0")
+            df[c] = 0
+
+    df['ip_pessoas'] = _pontuar_pessoas(df)
+    df['ip_infra'] = _pontuar_infraestrutura(df)
+    df['ip_processos'] = _pontuar_processos(df)
+    df['ip_seguranca'] = _pontuar_seguranca(df)
+
+    df['ip_sala_situacao'] = (
+        0.30 * df['ip_pessoas'] +
+        0.30 * df['ip_infra'] +
+        0.25 * df['ip_processos'] +
+        0.15 * df['ip_seguranca']
+    ).round(2)
+
+    logger.info("IP-SalaSit calculado com sucesso.")
+    return df
+
 # -------------------------------------------------------------------
 # # TRANSFORM – APLICA TRANSFORMAÇÕES NOS DADOS
 # -------------------------------------------------------------------
@@ -937,6 +1080,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     df = transformar_escalas_zero_dez(df)
     df = transformar_escalas_zero_cinco(df)
     df = tratar_sistemas_e_qualidade(df)
+    df = adicionar_ip_sala_situacao(df)
 
     logger.info("Transformação concluída.")
     return df
@@ -1012,7 +1156,6 @@ def main():
             
             # Delay entre cada tabela de dimensão (exceto a última)
             if i < len(dim_abas) - 1:
-                time.sleep(5)
                 logger.info(f"Delay aplicado após criar {aba_nome}")
                 
     except Exception as e:
