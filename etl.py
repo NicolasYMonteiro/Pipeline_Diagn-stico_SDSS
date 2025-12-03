@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Counter
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
@@ -8,7 +9,10 @@ from datetime import datetime
 import numpy as np
 import time
 
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
+import re
+import unicodedata
 
 # CONFIGURAÇÃO DO LOGGER
 logging.basicConfig(
@@ -33,7 +37,6 @@ def load_google_credentials():
     return Credentials.from_service_account_file(json_path, scopes=scopes)
 
 
-
 # EXTRACT – LE O GOOGLE SHEETS
 def extract(sheet_id: str, tab_name: str):
     logger.info(f"Lendo planilha: {sheet_id} | Aba: {tab_name}")
@@ -50,211 +53,99 @@ def extract(sheet_id: str, tab_name: str):
     logger.info(f"Linhas carregadas: {len(df)}")
     return df, client
 
+def limpar_texto(texto: str) -> str:
+    texto = unicodedata.normalize('NFKD', texto).encode('ascii', 'ignore').decode('utf-8')
+    texto = re.sub(r'[^a-zA-Z\s]', ' ', texto.lower())
+    texto = re.sub(r'\s+', ' ', texto).strip()
+    return texto
 
-# TRANSFORM – TRATAMENTO PADRÃO (MODIFIQUE COMO QUISER)
-def normalizar_area_atuacao(df: pd.DataFrame) -> pd.DataFrame:
+def gerar_nome_grupo(textos: list[str]) -> str:
     """
-    Normaliza a coluna 'area_atuacao' agrupando variações em categorias consistentes
+    Gera um nome legível para o grupo com base nas palavras mais comuns
     """
-    
-    # Mapeamento de normalização
-    mapeamento_areas = {
-        # Vazio
-        '': "Desconhecido",
-
-        # Subcoordenadorias
-        'Subcoordenadoria de Atenção e Vigilância à Saúde': 'Subcoordenadoria de Atenção e Vigilância',
-        'Subcoordenadoria administrativa': 'Subcoordenadoria Administrativa',
-        'Subcoordenadoria de Atenção e Vigilância à Saúde': 'Subcoordenadoria de Atenção e Vigilância',
-        
-        # Áreas administrativas
-        'Área administrativa': 'Administrativo',
-        'Técnica administrativa': 'Administrativo',
-        'Auxiliar administrativo': 'Administrativo',
-        'Técnica Administrativa': 'Administrativo',
-        'Área técnica': 'Administrativo',
-        'Tecnica Administrativa / RH': 'Administrativo/RH',
-        'Administrativo': 'Administrativo',
-        'admistrativa de apoio': 'Administrativo',
-        'Administração': 'Administrativo',
-        'Auxiliar administrativa': 'Administrativo',
-        'Administração -': 'Administrativo',
-        'Apoio administrativo': 'Administrativo',
-        'Administrativa - Programa Saúde da mulher e Fichas do Sinan': 'Administrativo',
-        'administrativa': 'Administrativo',
-        'Admistrativo': 'Administrativo',
-        'Setor administrativo': 'Administrativo',
-        'Serviço de ações do administrativo': 'Administrativo',
-        'Assistente administrativo - digitação de fichas, documentação, envio e coleta de documentação.': 'Administrativo',
-        'Auxiliar administrativo de ações': 'Administrativo',
-        'Técnica administrativa - suporte ao serviço': 'Administrativo',
-        'Administrativa': 'Administrativo',
-        'Administrativo - setor de ações': 'Administrativo',
-        'Tecnico de nivel medio I atendimento': 'Administrativo',
-        
-        # RH
-        'Chefe de RH': 'RH',
-        'Chefia de RH': 'RH',
-        'Setor Administrativo/RH': 'RH',
-        'RH': 'RH',
-        
-        # Vigilância Epidemiológica (VIEP)
-        'Vigilância epidemiológica': 'Vigilância Epidemiológica',
-        'Vigilância epidemiológica': 'Vigilância Epidemiológica',
-        'Tecnica da VIEP': 'Vigilância Epidemiológica',
-        'VIEP': 'Vigilância Epidemiológica',
-        'Técnica da VIEP': 'Vigilância Epidemiológica',
-        'VIEP- VIGILÂNCIA EPIDEMIOLÓGICA': 'Vigilância Epidemiológica',
-        'Tec. VIEP': 'Vigilância Epidemiológica',
-        'Técnico da viep': 'Vigilância Epidemiológica',
-        'Chefia de viep': 'Vigilância Epidemiológica',
-        'Chefia da vigilância epidemiológica': 'Vigilância Epidemiológica',
-        'Chefia do setor Vigilância Epidemiológica e Sistemas de Informação em Saúde': 'Vigilância Epidemiológica',
-        'Operadora de Sistemas da VIEP': 'Vigilância Epidemiológica',
-        'Técnica de Enfermagem- VIEP': 'Vigilância Epidemiológica',
-        'vigilancia epidemiologica': 'Vigilância Epidemiológica',
-        
-        # Vigilância Sanitária (VISA)
-        'Protocolo da VISA': 'Vigilância Sanitária',
-        'Vigilância sanitária': 'Vigilância Sanitária',
-        'Fiscal de controle sanitário': 'Vigilância Sanitária',
-        'Fiscal dr controle sanitário': 'Vigilância Sanitária',
-        'Vigilância Sanitária do município': 'Vigilância Sanitária',
-        'Encarregada de Apoio, a frente da recepção, do protocolo, da VISA (vigilância Sanitária)': 'Vigilância Sanitária',
-        
-        # Enfermagem e Técnicos de Enfermagem
-        'Técnico de enfermagem': 'Enfermagem',
-        'Tecnico de enfermagem': 'Enfermagem',
-        'TECNICA DE ENFERMAGEM': 'Enfermagem',
-        'Tecnica de enfermagem': 'Enfermagem',
-        'Técnica em enfermagem': 'Enfermagem',
-        'Técnica de Enfermagem': 'Enfermagem',
-        'Técnico de enfermagem': 'Enfermagem',
-        'Enfermeira- PAI DA VISA DSB': 'Enfermagem',
-        'Enfermeira da area de ações.': 'Enfermagem',
-        'Estagiária de Enfermagem': 'Enfermagem',
-        
-        # Ações e Serviços / Chefias
-        'Chefe de ações ou serviços': 'Chefia de Ações e Serviços',
-        'Chefia de ações e saúde': 'Chefia de Ações e Saúde',
-        'Chefia de ações e serviços': 'Chefia de Ações e Serviços',
-        'Chefia de vigilância epidemiológica': 'Chefia de Vigilância Epidemiológica',
-        'Chefia de setor da vigilância Epidemiologia': 'Chefia de Vigilância Epidemiológica',
-        'Chefe da Visa do Distrito Sanitário de Brotas': 'Chefia de Vigilância Epidemiológica',
-        'AÇÕES E SERVIÇOS': 'Ações e Serviços',
-        'Ações e Serviços': 'Ações e Serviços',
-        'CHEFIA AÇÕES BÁSICAS': 'Chefia de Ações e Serviços',
-        'Ações Básicas': 'Ações e Serviços',
-        'Ações': 'Ações e Serviços',
-        'Técnica ligada a chefia de ações': 'Ações e Serviços',
-        'Area técnica  - Chefia de Ações e Serviços': 'Ações e Serviços',
-        'Técnica vinculada a chefia de ações básicas': 'Ações e Serviços',
-        'Técnico de referência de pastas na chefia de ações e serviços': 'Ações e Serviços',
-        
-        # Áreas Técnicas Especializadas
-        'Referência técnica das ações de alimentação e nutrição': 'Área Técnica - Nutrição',
-        'Técnico de referência programa de nutrição': 'Área Técnica - Nutrição',
-        'Área técnica de alimentação e nutrição': 'Área Técnica - Nutrição',
-        'Profissional integrada a saúde - Nutricionista.': 'Área Técnica - Nutrição',
-
-        'Técnica de pasta de agravo': 'Área Técnica - Agravos',      
-
-        'Técnica de referência': 'Área Técnica - Referência',  
-        'Referência técnica': 'Área Técnica - Referência',
-        
-        'Referência técnica de saúde da mulher e ist': 'Área Técnica - Saúde da Mulher',
-        'Referência técnica Saúde da mulher, curativos especiais, doença renal crônica e oncologia,territorialização': 'Área Técnica - Saúde da Mulher',
-        
-        'Técnica de refrência em Saúde da Criança, Saúde do Adolescentes, Saúde da Pessoa com Deficiência e Programa de Saúde na Escola': 'Área Técnica - Saúde da Criança/Adolescente',
-        'Responsável pelas pastas: saúde do adolescente, saúde da pessoa com deficiência, doenças crônicas, telessaude e violência parte ações': 'Área Técnica - Programas Especiais',
-        
-        'Responsável técnica pelo programa saúde na escola e do adolescente': 'Área Técnica - PSE',
-        'Responsável técnica de imunização': 'Área Técnica - Imunização',
-        'referencia técnica de imunização': 'Área Técnica - Imunização',
-        
-        # Epidemiologia e Análise de Dados
-        'Setor de Epidemiologia e Análise da Informação em Saúde': 'Epidemiologia e Análise de Dados',
-        'Nugetes/ GT Plan': 'Epidemiologia e Análise de Dados',
-        'NUGETS': 'Epidemiologia e Análise de Dados',
-        'NUGETES': 'Epidemiologia e Análise de Dados',
-        
-        # Saúde Bucal
-        'Dentista distrital': 'Saúde Bucal',
-        'Odontóloga distrital': 'Saúde Bucal',
-        'Apoiadora dos Dentistas.': 'Saúde Bucal',
-        
-        # Farmácia
-        'Farmacêutico do distrito e do CAPS': 'Farmácia',
-        'Farmacêutica Distrital': 'Farmácia',
-        'Assistência Farmacêutica': 'Farmácia',
-        'Assistência Farmacêutica Distrital': 'Farmácia',
-        
-        # Outras categorias específicas
-        'Referência Técnica Curativos': 'Curativos Especiais',
-        'Técnica de referência de curativos especiais': 'Curativos Especiais',
-        
-        'Área técnica tuberculose e vigilância em Saúde do Trabalhador': 'Vigilância Saúde do Trabalhador',
-        'Área técnica de saúde da criança, adolescente, doenças crônica, tabagismo e PSE.': 'Área Técnica - Programas Especiais',
-        
-        'Referenccia de Investigação de òbitos Especiais': 'Vigilância do Óbito',
-        'Sanitarista da Vigilância Epidemiológica- Vigilância do óbito': 'Vigilância do Óbito',
-        
-        'Sanitarista': 'Sanitarista',
-        
-        # TI e Suporte Técnico
-        'TI do distrito': 'TI/Suporte Técnico',
-        'Técnico de Informática': 'TI/Suporte Técnico',
-        'NTI': 'TI/Suporte Técnico',
-        'Centro de Processamento de Dados': 'TI/Suporte Técnico',
-        
-        # Serviços Gerais
-        'Serviço gerais': 'Serviços Gerais',
-        'Serviços Gerais': 'Serviços Gerais',
-        'Motorista': 'Serviços Gerais',
-        
-        # Coordenação e Assistência
-        'Assistente da coordenação': 'Coordenação/Assistência',
-        'Subcoordenador Administrativo': 'Coordenação/Assistência',
-        
-        # Outros
-        'POP ruas, Vacina, ações externas...': 'Ações Externas/Comunitárias',
-        'Digitadora': 'Administrativo',
-        'Técnico': 'Técnico',
-        'Técnico Distrital': 'Técnico',
-        'técnico distrital': 'Técnico',
-        'referencia tecnica': 'Referência Técnica',
-        'Técnica de Referência das pastas Rede Alyne / PICS e Saúde do Homem': 'Referência Técnica',
-        'vigilancia': 'Vigilância',
-        'Ouvidoria': 'Ouvidoria',
-        'Sala de Imunização': 'Imunização',
-        'Vacinação': 'Imunização',
-        'Diretoria de Vigilância à Saúde': 'Diretoria',
-        'Setor de Ações e Serviços de Saúde': 'Ações e Serviços',
-        'Setor de Administração e Desenvolvimento de Pessoal': 'RH'
+    # Palavras-chave conhecidas (você pode expandir)
+    palavras_chave = {
+        'admin': 'Administrativo',
+        'vigilancia': 'Vigilância Epidemiológica',
+        'viep': 'Vigilância Epidemiológica',
+        'visa': 'Vigilância Sanitária',
+        'enferm': 'Enfermagem',
+        'chef': 'Chefia',
+        'acao': 'Ações e Serviços',
+        'dent': 'Saúde Bucal',
+        'odont': 'Saúde Bucal',
+        'farm': 'Farmácia',
+        'ti': 'TI/Suporte',
+        'inform': 'TI/Suporte',
+        'nutri': 'Nutrição',
+        'imun': 'Imunização',
+        'saude mulh': 'Saúde da Mulher',
+        'saude crianc': 'Saúde da Criança',
+        'adolescent': 'Saúde do Adolescente',
+        'epidem': 'Epidemiologia',
+        'nuget': 'Epidemiologia',
+        'sanitar': 'Sanitarista',
+        'serv geral': 'Serviços Gerais',
+        'motorist': 'Serviços Gerais',
+        'rh': 'RH',
+        'pessoal': 'RH',
+        'tecnico': 'Técnico',
+        'referencia': 'Referência Técnica',
+        'curativ': 'Curativos',
+        'tubercul': 'Tuberculose',
+        'sala imun': 'Imunização',
+        'vacin': 'Imunização',
+        'ouvid': 'Ouvidoria',
+        'diret': 'Diretoria',
+        'subcoord': 'Subcoordenadoria',
+        'coord': 'Coordenação'
     }
+
+    # Contar palavras limpas
+    texto_unido = ' '.join([limpar_texto(t) for t in textos])
+    palavras = texto_unido.split()
+    contador = Counter(palavras)
+
+    # Detectar palavra-chave mais frequente
+    for palavra, nome in palavras_chave.items():
+        if contador[palavra] > 0:
+            return nome
+
+    # Se não encontrou, usar as 2 palavras mais frequentes
+    top = contador.most_common(2)
+    if len(top) >= 2:
+        return f"{top[0][0].capitalize()} / {top[1][0].capitalize()}"
+    elif len(top) == 1:
+        return f"{top[0][0].capitalize()}"
+    else:
+        return "Outros"
     
-    # LIMPAR ESPAÇOS EXTRAS ANTES DO MAPEAMENTO
-    df['area_atuacao_limpa'] = df['area_atuacao'].str.strip()
-    
-    # Aplicar o mapeamento na coluna LIMPA
-    df['area_atuacao_normalizada'] = df['area_atuacao_limpa'].map(mapeamento_areas)
-    
-    # Debug: ver quantos foram mapeados
-    mapeados = df['area_atuacao_normalizada'].notna().sum()
-    print(f"Valores mapeados: {mapeados}/{len(df)}")
-    
-    # IDENTIFICAR VALORES NÃO MAPEADOS
-    nao_mapeados = df[df['area_atuacao_normalizada'].isna()]['area_atuacao_limpa'].unique()
-    print(f"Valores não mapeados ({len(nao_mapeados)}):")
-    for valor in nao_mapeados:
-        print(f"  '{valor}'")
-    
-    # SUBSTITUIR a coluna original pela normalizada
-    df['area_atuacao'] = df['area_atuacao_normalizada'].fillna(df['area_atuacao_limpa'])
-    
-    # Remover colunas temporárias
-    df = df.drop(['area_atuacao_limpa', 'area_atuacao_normalizada'], axis=1)
-    
+def normalizar_area_atuacao(df: pd.DataFrame, n_clusters: int = 15) -> pd.DataFrame:
+    df = df.copy()
+    df['area_limpa'] = df['area_atuacao'].fillna('').apply(limpar_texto)
+
+    vetorizador = TfidfVectorizer(max_features=500, stop_words='english')
+    X = vetorizador.fit_transform(df['area_limpa'])
+
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+    df['grupo'] = kmeans.fit_predict(X)
+
+    grupo_nome = {}
+    for grupo in df['grupo'].unique():
+        textos_originais = df[df['grupo'] == grupo]['area_atuacao'].tolist()
+        nome = gerar_nome_grupo(textos_originais)
+        grupo_nome[grupo] = nome
+
+    df['area_atuacao_normalizada'] = df['grupo'].map(grupo_nome)
+
+    print("📊 Grupos detectados:")
+    for grupo, nome in grupo_nome.items():
+        amostra = df[df['grupo'] == grupo]['area_atuacao'].mode()[0] if not df[df['grupo'] == grupo]['area_atuacao'].mode().empty else "-"
+        print(f"  Grupo {grupo}: {nome} (ex: '{amostra}')")
+
+    df['area_atuacao'] = df['area_atuacao_normalizada']
+    df = df.drop(columns=['area_limpa', 'grupo', 'area_atuacao_normalizada'])
+
     return df
 
 def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -588,7 +479,6 @@ def transformar_categoricos_pequenos(df: pd.DataFrame) -> pd.DataFrame:
         print(f"Média: {df[f'{coluna}_num'].mean()}")
         print(f"Contagem de NaNs: {df[f'{coluna}_num'].isna().sum()}")
         
-        # 2. Restante do seu código...
         ordem_categorias = ['Nenhum', '1', '2', '3 a 5', '6 ou mais', 'Não sei informar', 'Não se aplica']
         df[coluna] = pd.Categorical(df[coluna], categories=ordem_categorias, ordered=True)
         
@@ -857,70 +747,6 @@ def criar_resumo_sistemas(df: pd.DataFrame) -> pd.DataFrame:
     resumo_df = resumo_df[resumo_df['uso'] > 0]  # só quem foi usado
     return resumo_df
 
-def criar_resumo_metas(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Cria uma tabela resumo com metas distritais.
-    """
-
-    distritos = [
-        "Brotas",
-        "Cajazeiras",
-        "Boca do Rio",
-        "Itapuã",
-        "São Caetano/Valéria",
-        "Barra/Rio Vermelho",
-        "Cabula/Beirú",
-        "Subúrbio Ferroviário",
-        "Pau da Lima",
-        "Liberdade",
-        "Itapagipe",
-        "Centro Histórico"
-    ]
-
-    metas = {
-        'Brotas': 50,
-        'Cajazeiras': 40,
-        'Boca do Rio': 32,
-        'Itapuã': 43,
-        'São Caetano/Valéria': 41,
-        'Barra/Rio Vermelho': 34,
-        'Cabula/Beirú': 39,
-        'Subúrbio Ferroviário': 58,
-        'Pau da Lima': 47,
-        'Liberdade': 30,
-        'Itapagipe': 42,
-        'Centro Histórico': 45
-    }
-
-    resumo = []
-    for distrito in distritos:
-        meta = metas.get(distrito, None)
-        resumo.append({
-            'distrito': distrito,
-            'meta_distrital': meta
-        })
-    
-    resumo_df = pd.DataFrame(resumo)
-    return resumo_df
-
-def criar_tabelas_dimensao():
-    # -------------------------------------------------------------------
-    # CRIAÇÃO DAS TABELAS DE DIMENSÃO
-    # -------------------------------------------------------------------
-    logger.info("Criando tabelas de dimensão...")
-
-    with open("tabelas_dimensionamento.json", "r", encoding="utf-8") as f:
-        dims = json.load(f)["dimension_tables"]
-
-    abas = {}
-    for nome, conteudo in dims.items():
-        df = pd.DataFrame(conteudo["data"])
-        aba_nome = f"{nome}"
-        abas[aba_nome] = df
-
-    return abas
-
-
 # FUNÇÕES para INDICADORES – PONTUAÇÃO POR DIMENSÃO
 
 def _pontuar_pessoas(df: pd.DataFrame) -> pd.Series:
@@ -1033,16 +859,14 @@ def _pontuar_seguranca(df: pd.DataFrame) -> pd.Series:
         treino * 25 +
         acesso * 25 +
         backup * 20
-    )  # já 0-100
+    ) 
     logger.info(f"ESTATÍSTICA seguranca -> min:{score.min():.1f} | média:{score.mean():.1f} | max:{score.max():.1f}")
     return score.clip(0, 100)
 
-# FUNÇÃO PRINCIPAL – ADICIONA O ÍNDICE
 def adicionar_ip_sala_situacao(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Calculando IP-SalaSit...")
     df = df.copy()
 
-    # garantir que colunas numéricas já existam
     num_cols = ['competencia_tecnica_equipe_num', 'estacoes_trabalho_boas_num',
                 'notebooks_boas_num', 'qualidade_internet_num', 'qtd_ferramentas']
     for c in num_cols:
@@ -1089,43 +913,31 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 # LOAD – CRIA ABA E ESCREVE DADOS NA MESMA PLANILHA
 # -------------------------------------------------------------------
 def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "DadosEtl"):
-    logger.info(f"Criando aba '{new_tab}' na planilha...")
+    logger.info(f"Atualizando aba '{new_tab}' sem excluir...")
 
     sh = client.open_by_key(sheet_id)
 
     try:
-        existing = sh.worksheet(new_tab)
-        sh.del_worksheet(existing)
-        logger.info("Aba existente encontrada → removida.")
+        ws = sh.worksheet(new_tab)
+        logger.info(f"Aba '{new_tab}' encontrada. Limpando e sobrescrevendo...")
     except gspread.exceptions.WorksheetNotFound:
-        pass
+        logger.info(f"Aba '{new_tab}' não existe. Criando...")
+        ws = sh.add_worksheet(title=new_tab, rows=str(len(df) + 5), cols=str(len(df.columns) + 5))
 
-    ws = sh.add_worksheet(title=new_tab, rows=str(len(df) + 5), cols=str(len(df.columns) + 5))
+    ws.clear()
 
-    # Preparar dados
     df_preparado = df.copy()
-    
     for col in df_preparado.columns:
         if df_preparado[col].dtype.name == 'category':
             df_preparado[col] = df_preparado[col].astype(str)
-    
     df_preparado = df_preparado.fillna('')
 
-    # 🔥 ENVIAR DADOS UMA ÚNICA VEZ
     values = [df_preparado.columns.tolist()] + df_preparado.values.tolist()
     ws.update(values)
 
-    # 🔥 FORMATAR COMO TABELA COMPLETA
-    try:
-        # 1. Congelar primeira linha
-        ws.freeze(rows=1)
-        
-        logger.info(f"Aba '{new_tab}' formatada como tabela completa.")
-        
-    except Exception as e:
-        logger.warning(f"Não foi possível aplicar formatação completa: {e}")
+    ws.freeze(rows=1)
 
-    logger.info(f"Aba '{new_tab}' criada com sucesso.")
+    logger.info(f"Aba '{new_tab}' atualizada com sucesso — sem excluir!")
 
 # -------------------------------------------------------------------
 # MAIN
@@ -1138,29 +950,8 @@ def main():
     df, client = extract(SHEET_ID, TAB)
     df = transform(df)
     
-    # 🔥 USAR load_to_sheet PARA TODAS AS ABAS
     load_to_sheet(client, SHEET_ID, df, NEW_TAB)
 
-    # Criar e carregar resumos usando load_to_sheet
-    resumo_df = criar_resumo_sistemas(df)
-    load_to_sheet(client, SHEET_ID, resumo_df, "ResumoSistemas")
-
-    resumo_metas_df = criar_resumo_metas(df)
-    load_to_sheet(client, SHEET_ID, resumo_metas_df, "ResumoMetas")
-
-    # 🔥 CARREGAR TABELAS DE DIMENSÃO COM load_to_sheet E DELAYS
-    try:
-        dim_abas = criar_tabelas_dimensao()
-        for i, (aba_nome, dim_df) in enumerate(dim_abas.items()):
-            load_to_sheet(client, SHEET_ID, dim_df, aba_nome)
-            
-            # Delay entre cada tabela de dimensão (exceto a última)
-            if i < len(dim_abas) - 1:
-                logger.info(f"Delay aplicado após criar {aba_nome}")
-                
-    except Exception as e:
-        logger.error(f"Erro ao criar abas de dimensão: {e}")
-    
     logger.info("ETL COMPLETO! Todas as abas formatadas como tabelas.")
 
 
