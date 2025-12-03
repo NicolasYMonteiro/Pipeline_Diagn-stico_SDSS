@@ -1,4 +1,4 @@
-import json
+8import json
 import os
 from typing import Counter
 import pandas as pd
@@ -943,7 +943,7 @@ def load_to_sheet(client, sheet_id: str, df: pd.DataFrame, new_tab: str = "Dados
 # MAIN
 # -------------------------------------------------------------------
 def main():
-    SHEET_ID = "1GEFCBgoE5ed9yrEjAYe-FbWwXsIfc5G9mU2Gi0Yu_Kw"
+    SHEET_ID = "..."
     TAB = "BaseBruta"
     NEW_TAB = "DadosEtl"
 
